@@ -6,6 +6,7 @@ var in_sight = []
 
 func _ready() -> void:
 	$MapTileMap.move_signal.connect(update_light)
+	$BackgroundTileMap.move_path.connect($MapTileMap.move_to)
 
 
 func _process(_delta: float) -> void:

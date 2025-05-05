@@ -27,31 +27,19 @@ func _process(delta: float) -> void:
 	if Input.is_action_just_released("move_down"):
 		move($Player, Vector2i.DOWN)
 
-func _input(event):
-	# Mouse in viewport coordinates.
-	if event is InputEventMouseButton and event.pressed:
-		var mouse_position = get_local_mouse_position()
-		move_to(mouse_position)
-
-func move_to(target_position):
-	%Player/NavigationAgent2D.target_position = target_position
-	while not %Player/NavigationAgent2D.is_navigation_finished():
-		# %Player/NavigationAgent2D.target_position = target_position
-		var next_path_position = %Player/NavigationAgent2D.get_next_path_position()
-		print(next_path_position)
-		print(local_to_map(next_path_position))
-		print(local_to_map($Player.position))
-		var next_position = local_to_map(next_path_position)
+func move_to(follow_path):
+	for point in follow_path:
+		var next_position = local_to_map(point)
 		var start_position = local_to_map($Player.position)
-		var direction: Vector2i
+		var direction: Vector2i = Vector2i.ZERO
 		if next_position.x > start_position.x:
-			direction = Vector2i.RIGHT
+			direction += Vector2i.RIGHT
 		elif next_position.x < start_position.x:
-			direction = Vector2i.LEFT
-		elif next_position.y < start_position.y:
-			direction = Vector2i.UP
+			direction += Vector2i.LEFT
+		if next_position.y < start_position.y:
+			direction += Vector2i.UP
 		elif next_position.y > start_position.y:
-			direction = Vector2i.DOWN
+			direction += Vector2i.DOWN
 		if not move(%Player, direction):
 			break
 		await get_tree().create_timer(.5).timeout
@@ -60,11 +48,9 @@ func move_to(target_position):
 func move(node: Node2D, direction: Vector2i) -> bool:
 	var start = local_to_map(node.position)
 	var target = start + direction
-	print("target: ", target)
 	var tile_id = get_cell_source_id(target)
 	match tile_id:
 		Element2D.CellType.WALL:
-			print("found wall")
 			return false
 		_:
 			set_cell(target, Element2D.CellType.ACTOR, Vector2i.ZERO)
