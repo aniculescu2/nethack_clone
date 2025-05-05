@@ -4,4 +4,3 @@
 
 [node name="Player" type="Node2D"]
 script = ExtResource("1_4flbx")
-metadata/_custom_type_script = "uid://ckfgd6ye01vbj"

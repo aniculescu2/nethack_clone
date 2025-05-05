@@ -4,7 +4,9 @@ extends Node2D
 enum CellType {
     ACTOR,
     WALL,
-    DOOR
+    FLOOR,
+    DOOR,
+    LOCKED_DOOR,
 }
 
 @export var element_id: CellType
