@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=4 uid="uid://baowome0sfn0x"]
+[gd_scene load_steps=17 format=4 uid="uid://baowome0sfn0x"]
 
 [ext_resource type="Texture2D" uid="uid://sbgbkcol3rcb" path="res://textures/stone_floor_small.png" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://cuhg8cfw6e0r5" path="res://player.tscn" id="2_1bvp3"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://dfy7f3ftkxnfy" path="res://map_tile_map.gd" id="6_5vw27"]
 [ext_resource type="Texture2D" uid="uid://daw0bvxnif8o8" path="res://textures/closed_door.jpg" id="6_kek77"]
 [ext_resource type="Script" uid="uid://di71p8xq5e0xq" path="res://object_tile_map.gd" id="7_5vw27"]
+[ext_resource type="Script" uid="uid://c310bnq4xobep" path="res://camera_2d.gd" id="9_kek77"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7mycd"]
 texture = ExtResource("3_lquwl")
@@ -38,8 +39,9 @@ texture_region_size = Vector2i(64, 64)
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5vw27"]
 texture = ExtResource("1_ig7tw")
 texture_region_size = Vector2i(64, 64)
-0:0/next_alternative_id = 3
+0:0/next_alternative_id = 7
 0:0/0 = 0
+0:0/0/modulate = Color(0.775063, 0.775063, 0.775063, 1)
 0:0/0/custom_data_0 = 2
 0:0/1 = 1
 0:0/1/modulate = Color(0.393086, 0.393086, 0.393085, 1)
@@ -47,6 +49,8 @@ texture_region_size = Vector2i(64, 64)
 0:0/2 = 2
 0:0/2/modulate = Color(0, 0, 0, 1)
 0:0/2/custom_data_0 = 2
+0:0/6 = 6
+0:0/6/custom_data_0 = 2
 
 [sub_resource type="TileSet" id="TileSet_lquwl"]
 tile_size = Vector2i(64, 64)
@@ -105,3 +109,4 @@ position = Vector2(96, 96)
 script = SubResource("GDScript_5vw27")
 
 [node name="Camera2D" type="Camera2D" parent="Map/ObjectTileMap/Player"]
+script = ExtResource("9_kek77")

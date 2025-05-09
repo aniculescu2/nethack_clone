@@ -12,14 +12,20 @@ var _astar = AStarGrid2D.new()
 var _start_point = Vector2i()
 var _end_point = Vector2i()
 var _path = PackedVector2Array()
-var visited = []
-var in_sight = []
-var following_state = State.IDLE
+var _visited = []
+var _in_sight = []
+var _following_state = State.IDLE
+var _click_position: Vector2
+var _next_point
+var _dragging: bool
+
+@onready var _player_node: Element2D = %Player
+@onready var _camera_node: Camera2D = _player_node.get_node("Camera2D")
 
 func _ready() -> void:
 	# Initialize the tile map layer
 	for child in get_children():
-		if child is Node2D:
+		if child is Element2D:
 			set_cell(local_to_map(child.position), child.element_id, Vector2i.ZERO)
 
 	var mapRect: Rect2i = get_used_rect()
@@ -28,7 +34,7 @@ func _ready() -> void:
 			var current = Vector2i(x, y)
 			var tile_id = get_cell_source_id(current)
 			set_cell(current, tile_id, Vector2i.ZERO, 2)
-	update_light(local_to_map(%Player.position))
+	update_light(local_to_map(_player_node.position))
 	_astar.region = Rect2i(0, 0, mapRect.end.x + 1, mapRect.end.y + 1)
 	_astar.cell_size = CELL_SIZE
 	_astar.offset = CELL_SIZE * 0.5
@@ -40,74 +46,118 @@ func _ready() -> void:
 	for i in range(_astar.region.position.x, _astar.region.end.x):
 		for j in range(_astar.region.position.y, _astar.region.end.y):
 			var pos = Vector2i(i, j)
-			print("pos", pos)
 			var tile_data = get_cell_tile_data(pos)
 			if tile_data:
 				var element_id = tile_data.get_custom_data("Element_ID")
 				if element_id == Element2D.CellType.WALL || element_id == Element2D.CellType.LOCKED_DOOR:
 					_astar.set_point_solid(pos)
 
-
 func _input(event):
 	# Mouse in viewport coordinates.
 	if event is InputEventMouseButton and event.pressed:
-		var mouse_position = get_local_mouse_position()
-		move_to(get_follow_path(mouse_position))
+		match event.button_index:
+			MOUSE_BUTTON_LEFT:
+				if event.is_double_click():
+					_click_position = get_local_mouse_position()
+					_change_state(State.FOLLOW)
+					start_path()
+			MOUSE_BUTTON_WHEEL_UP:
+				var current_zoom = _camera_node.zoom
+				if current_zoom < Vector2(2, 2):
+					_camera_node.zoom = current_zoom + Vector2(.3, .3)
+			MOUSE_BUTTON_WHEEL_DOWN:
+				var current_zoom = _camera_node.zoom
+				if current_zoom >= Vector2(.3, .3):
+					_camera_node.zoom = current_zoom - Vector2(.3, .3)
+
+	elif event is InputEventMouseMotion and event.pressure:
+		_dragging = true
+		_camera_node.position -= event.relative
+
+	_dragging = false
+
 
 func _unhandled_key_input(event: InputEvent) -> void:
 	if event.is_action_released("move_right"):
-		move(%Player, Vector2i.RIGHT)
-		following_state = State.IDLE
+		move(_player_node, Vector2i.RIGHT)
+		_following_state = State.IDLE
 	if event.is_action_released("move_left"):
-		move(%Player, Vector2i.LEFT)
-		following_state = State.IDLE
+		move(_player_node, Vector2i.LEFT)
+		_following_state = State.IDLE
 	if event.is_action_released("move_up"):
-		move(%Player, Vector2i.UP)
-		following_state = State.IDLE
+		move(_player_node, Vector2i.UP)
+		_following_state = State.IDLE
 	if event.is_action_released("move_down"):
-		move(%Player, Vector2i.DOWN)
-		following_state = State.IDLE
+		move(_player_node, Vector2i.DOWN)
+		_following_state = State.IDLE
 	if event.is_action_released("cancel"):
-		following_state = State.IDLE
 		clear_path()
+
+func start_path() -> void:
+	while (_following_state == State.FOLLOW):
+		highlight_tile(local_to_map(_path[-1]), true)
+		var arrived_to_next_point = move_to(_player_node, _next_point)
+		highlight_tile(local_to_map(_path[-1]), true)
+		await get_tree().create_timer(.5).timeout
+		if arrived_to_next_point:
+			_path.remove_at(0)
+			if _path.is_empty():
+				clear_path()
+				return
+			_next_point = _path[0]
+		else:
+			clear_path()
+			# ai_round()
 
 func clear_path():
 	if not _path.is_empty():
+		highlight_tile(local_to_map(_path[-1]), false)
 		_path.clear()
+	_following_state = State.IDLE
+
+func _change_state(new_state):
+	if new_state == State.IDLE:
+		clear_path()
+	elif new_state == State.FOLLOW:
+		_path = get_follow_path(_click_position)
+		if _path.size() < 2:
+			_change_state(State.IDLE)
+			return
+		# The index 0 is the starting cell.
+		# We don't want the character to move back to it in this example.
+		_next_point = _path[1]
+	_following_state = new_state
 
 func get_follow_path(target_position):
 	clear_path()
 
-	_start_point = local_to_map(%Player.position)
+	_start_point = local_to_map(_player_node.position)
 	_end_point = local_to_map(target_position)
 	_path = _astar.get_point_path(_start_point, _end_point, true)
-	print(_path)
 	return _path.duplicate()
 
-func move_to(follow_path):
-	following_state = State.FOLLOW
-	for point in follow_path:
-		if following_state == State.FOLLOW:
-			var next_position = local_to_map(point)
-			var start_position = local_to_map(%Player.position)
-			var direction: Vector2i = Vector2i.ZERO
-			if next_position.x > start_position.x:
-				direction += Vector2i.RIGHT
-			elif next_position.x < start_position.x:
-				direction += Vector2i.LEFT
-			if next_position.y < start_position.y:
-				direction += Vector2i.UP
-			elif next_position.y > start_position.y:
-				direction += Vector2i.DOWN
-			if not move(%Player, direction):
-				following_state = State.IDLE
-		else:
-			break
-		await get_tree().create_timer(.5).timeout
-	following_state = State.IDLE
+func highlight_tile(tile_position, flag):
+	var tile_id = get_cell_source_id(tile_position)
+	if flag:
+		set_cell(tile_position, tile_id, Vector2i.ZERO, 6)
+	else:
+		set_cell(tile_position, tile_id, Vector2i.ZERO, 0)
 
+func move_to(node: Element2D, target: Vector2i) -> bool:
+	var next_position = local_to_map(target)
+	var start_position = local_to_map(node.position)
+	var direction: Vector2i = Vector2i.ZERO
+	if next_position.x > start_position.x:
+		direction += Vector2i.RIGHT
+	elif next_position.x < start_position.x:
+		direction += Vector2i.LEFT
+	if next_position.y < start_position.y:
+		direction += Vector2i.UP
+	elif next_position.y > start_position.y:
+		direction += Vector2i.DOWN
+	return move(node, direction)
 
-func move(node: Node2D, direction: Vector2i) -> bool:
+func move(node: Element2D, direction: Vector2i) -> bool:
 	var start = local_to_map(node.position)
 	var target = start + direction
 	var tile_id = get_cell_source_id(target)
@@ -124,10 +174,10 @@ func update_light(target: Vector2i) -> void:
 	# Search adjacent tiles and lighten color modulation
 	# Use BFS to find adjacent tiles and hit walls
 	var queue = []
-	for tile in in_sight:
-		if not visited.has(tile):
-			visited.append(tile)
-	in_sight = []
+	for tile in _in_sight:
+		if not _visited.has(tile):
+			_visited.append(tile)
+	_in_sight = []
 	queue.append(target)
 	while queue.size() > 0:
 		var current: Vector2i = queue.pop_front()
@@ -167,7 +217,7 @@ func update_light(target: Vector2i) -> void:
 			if is_covered:
 				continue
 
-		in_sight.append(current)
+		_in_sight.append(current)
 		set_cell(current, tile_id, Vector2i.ZERO, 0)
 
 		# Find neighboring tiles, if current is a wall, stop searching
@@ -177,19 +227,19 @@ func update_light(target: Vector2i) -> void:
 			continue
 		for direction in [Vector2i.RIGHT, Vector2i.LEFT, Vector2i.UP, Vector2i.DOWN, Vector2i(1, 1), Vector2i(-1, -1), Vector2i(1, -1), Vector2i(-1, 1)]:
 			var neighbor = current + direction
-			if not in_sight.has(neighbor):
+			if not _in_sight.has(neighbor):
 				queue.append(neighbor)
 
 	# Remove tiles that are not in sight
 	var erased = true
 	while erased:
 		erased = false
-		for tile in visited:
-			if tile in in_sight:
-				visited.erase(tile)
+		for tile in _visited:
+			if tile in _in_sight:
+				_visited.erase(tile)
 				erased = true
 				continue
 
-	for current in visited:
+	for current in _visited:
 		var tile_id = get_cell_source_id(current)
 		set_cell(current, tile_id, Vector2i.ZERO, 1)

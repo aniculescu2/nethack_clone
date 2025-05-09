@@ -13,3 +13,5 @@ func move_element(element, target):
     set_cell(target, element.element_id, Vector2i.ZERO)
     set_cell(start, tile_on_spot, Vector2i.ZERO)
     element.position = map_to_local(target)
+    if element == $Player:
+        $Player/Camera2D.position = Vector2(0, 0)
