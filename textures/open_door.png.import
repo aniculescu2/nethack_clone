@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c77hfsddo4yub"
-path="res://.godot/imported/neutral_point_light.webp-a194de34263ee28f0806941b58ba0e9f.ctex"
+uid="uid://csk7mvc0q55t4"
+path="res://.godot/imported/open_door.png-a37f25655458fd461361dea293403da2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://textures/neutral_point_light.webp"
-dest_files=["res://.godot/imported/neutral_point_light.webp-a194de34263ee28f0806941b58ba0e9f.ctex"]
+source_file="res://textures/open_door.png"
+dest_files=["res://.godot/imported/open_door.png-a37f25655458fd461361dea293403da2.ctex"]
 
 [params]
 

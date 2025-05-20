@@ -139,7 +139,7 @@ func get_follow_path(target_position):
 func highlight_tile(tile_position, flag):
 	var tile_id = get_cell_source_id(tile_position)
 	if flag:
-		set_cell(tile_position, tile_id, Vector2i.ZERO, 6)
+		set_cell(tile_position, tile_id, Vector2i.ZERO, 3)
 	else:
 		set_cell(tile_position, tile_id, Vector2i.ZERO, 0)
 
@@ -160,10 +160,15 @@ func move_to(node: Element2D, target: Vector2i) -> bool:
 func move(node: Element2D, direction: Vector2i) -> bool:
 	var start = local_to_map(node.position)
 	var target = start + direction
-	var tile_id = get_cell_source_id(target)
-	match tile_id:
+	var element_id = get_cell_tile_data(target).get_custom_data("Element_ID")
+	match element_id:
 		Element2D.CellType.WALL:
 			return false
+		Element2D.CellType.CLOSED_DOOR:
+			set_cell(target, 0, Vector2i.ZERO, 0)
+			move_signal.emit(node, target)
+			update_light(target)
+			return true
 		_:
 			move_signal.emit(node, target)
 			update_light(target)
@@ -183,9 +188,9 @@ func update_light(target: Vector2i) -> void:
 		var current: Vector2i = queue.pop_front()
 		var tile_id: int = get_cell_source_id(current)
 		var element_id: Element2D.CellType = get_cell_tile_data(current).get_custom_data("Element_ID")
-
+		var is_closed = element_id == Element2D.CellType.CLOSED_DOOR or element_id == Element2D.CellType.LOCKED_DOOR or element_id == Element2D.CellType.WALL
 		# If any wall tiles between current and target, don't change cell
-		if element_id != Element2D.CellType.WALL:
+		if not is_closed:
 			var is_covered = false
 
 			var m: float = 0.0
@@ -198,19 +203,21 @@ func update_light(target: Vector2i) -> void:
 				else:
 					increment = 2
 				for x in range(current.x * 10.0, target.x * 10.0, increment):
-					var y: float = -m * (target.x - (x / 10.0)) + target.y
+					var y: float = (-m * (target.x - (x / 10.0))) + target.y
 					var line_cell = Vector2i(roundi(x / 10.0), roundi(y))
-					if get_cell_source_id(line_cell) == Element2D.CellType.WALL:
+					var cell_id = get_cell_tile_data(line_cell).get_custom_data("Element_ID")
+					if cell_id == Element2D.CellType.WALL or cell_id == Element2D.CellType.CLOSED_DOOR or cell_id == Element2D.CellType.LOCKED_DOOR:
 						is_covered = true
 						break
-			else:
+
 				# Iterate through y
 				if current.y > target.y:
 					increment = -1
 				else:
 					increment = 1
 				for y in range(current.y, target.y, increment):
-					if get_cell_source_id(Vector2i(target.x, y)) == Element2D.CellType.WALL:
+					var cell_id = get_cell_tile_data(Vector2i(target.x, y)).get_custom_data("Element_ID")
+					if cell_id == Element2D.CellType.WALL or cell_id == Element2D.CellType.CLOSED_DOOR or cell_id == Element2D.CellType.LOCKED_DOOR:
 						is_covered = true
 						break
 
@@ -220,11 +227,11 @@ func update_light(target: Vector2i) -> void:
 		_in_sight.append(current)
 		set_cell(current, tile_id, Vector2i.ZERO, 0)
 
+		if is_closed:
+			# If the current tile is a wall, stop searching
+			continue
+
 		# Find neighboring tiles, if current is a wall, stop searching
-		if element_id == Element2D.CellType.WALL:
-			continue
-		elif element_id == Element2D.CellType.DOOR:
-			continue
 		for direction in [Vector2i.RIGHT, Vector2i.LEFT, Vector2i.UP, Vector2i.DOWN, Vector2i(1, 1), Vector2i(-1, -1), Vector2i(1, -1), Vector2i(-1, 1)]:
 			var neighbor = current + direction
 			if not _in_sight.has(neighbor):

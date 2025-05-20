@@ -5,7 +5,8 @@ enum CellType {
     ACTOR,
     WALL,
     FLOOR,
-    DOOR,
+    CLOSED_DOOR,
+    OPEN_DOOR,
     LOCKED_DOOR,
 }
 
