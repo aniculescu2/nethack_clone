@@ -164,8 +164,11 @@ func move(node: Element2D, direction: Vector2i) -> bool:
 	match element_id:
 		Element2D.CellType.WALL:
 			return false
+		Element2D.CellType.LOCKED_DOOR:
+			# TODO: Implement locked door logic
+			return false
 		Element2D.CellType.CLOSED_DOOR:
-			set_cell(target, 0, Vector2i.ZERO, 0)
+			open_door(target)
 			move_signal.emit(node, target)
 			update_light(target)
 			return true
@@ -174,6 +177,10 @@ func move(node: Element2D, direction: Vector2i) -> bool:
 			update_light(target)
 			return true
 
+## Opens a door at the specified target position and updates navigation
+func open_door(target: Vector2i) -> void:
+	set_cell(target, 0, Vector2i.ZERO, 0)
+	_astar.set_point_solid(target, false)
 
 func update_light(target: Vector2i) -> void:
 	# Search adjacent tiles and lighten color modulation
