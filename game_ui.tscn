@@ -1,0 +1,46 @@
+[gd_scene load_steps=2 format=3 uid="uid://gwxfclicuy8r"]
+
+[ext_resource type="Script" uid="uid://dxxgthrgjtldv" path="res://game_ui.gd" id="1_ue6oa"]
+
+[node name="GameUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ue6oa")
+
+[node name="PickUpButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 514.0
+offset_top = 606.0
+offset_right = 598.0
+offset_bottom = 638.0
+text = "Pick Up"
+
+[node name="InventoryButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 21.0
+offset_top = 606.0
+offset_right = 53.0
+offset_bottom = 637.0
+text = "Inv"
+
+[node name="InventoryPanel" type="PanelContainer" parent="."]
+layout_mode = 0
+offset_left = 21.0
+offset_top = 194.0
+offset_right = 277.0
+offset_bottom = 590.0
+
+[node name="InventoryList" type="ItemList" parent="InventoryPanel"]
+layout_mode = 2
+wraparound_items = false
+item_count = 1
+max_columns = 4
+same_column_width = true
+fixed_column_width = 64
+
+[connection signal="pressed" from="PickUpButton" to="." method="_on_pick_up_button_pressed"]
+[connection signal="pressed" from="InventoryButton" to="." method="_on_inventory_button_pressed"]

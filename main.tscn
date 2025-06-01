@@ -12,6 +12,7 @@
 [ext_resource type="Script" uid="uid://di71p8xq5e0xq" path="res://object_tile_map.gd" id="7_5vw27"]
 [ext_resource type="Texture2D" uid="uid://bo104hvyoslff" path="res://textures/potion.png" id="9_dg77c"]
 [ext_resource type="Script" uid="uid://bimv1krwcmi4p" path="res://potion.gd" id="11_efxa6"]
+[ext_resource type="PackedScene" uid="uid://gwxfclicuy8r" path="res://game_ui.tscn" id="13_ycdy4"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_dg77c"]
 texture = ExtResource("2_4c57u")
@@ -124,15 +125,14 @@ texture_region_size = Vector2i(64, 64)
 texture = ExtResource("9_dg77c")
 texture_region_size = Vector2i(64, 64)
 0:0/0 = 0
+0:0/0/custom_data_0 = 6
 
 [sub_resource type="TileSet" id="TileSet_4c57u"]
 tile_size = Vector2i(64, 64)
+custom_data_layer_0/name = "Element_ID"
+custom_data_layer_0/type = 2
 sources/0 = SubResource("TileSetAtlasSource_kek77")
 sources/6 = SubResource("TileSetAtlasSource_w48qg")
-
-[sub_resource type="GDScript" id="GDScript_5vw27"]
-script/source = "extends Element2D
-"
 
 [node name="Main" type="Node"]
 
@@ -149,13 +149,18 @@ tile_set = SubResource("TileSet_4c57u")
 script = ExtResource("7_5vw27")
 
 [node name="Potion" type="Node2D" parent="Map/ObjectTileMap"]
-position = Vector2(92, 150)
+position = Vector2(96, 160)
 script = ExtResource("11_efxa6")
 metadata/_custom_type_script = "uid://bimv1krwcmi4p"
 
 [node name="Player" parent="Map/ObjectTileMap" instance=ExtResource("2_1bvp3")]
 unique_name_in_owner = true
 position = Vector2(96, 96)
-script = SubResource("GDScript_5vw27")
 
 [node name="Camera2D" type="Camera2D" parent="Map/ObjectTileMap/Player"]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="Map/ObjectTileMap/Player/Camera2D"]
+
+[node name="GameUI" parent="Map/ObjectTileMap/Player/Camera2D/CanvasLayer" instance=ExtResource("13_ycdy4")]
+
+[connection signal="object_picked_up" from="Map/ObjectTileMap/Player/Camera2D/CanvasLayer/GameUI" to="Map/ObjectTileMap" method="_on_game_ui_object_picked_up"]

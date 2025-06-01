@@ -21,3 +21,4 @@ enum PotionType {
 func _ready() -> void:
     print("Potion ready: Type: %s, Amount: %d, Duration: %d seconds" % [PotionType.find_key(potion_type), potion_amount, potion_duration])
     element_id = Element2D.CellType.ITEM
+    texture_path = "res://textures/potion.png"

@@ -12,3 +12,4 @@ enum CellType {
 }
 
 @export var element_id: CellType
+@export var texture_path: String
