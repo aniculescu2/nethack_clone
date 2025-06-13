@@ -1,6 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://cuhg8cfw6e0r5"]
+[gd_scene load_steps=3 format=3 uid="uid://cuhg8cfw6e0r5"]
 
 [ext_resource type="Script" uid="uid://dbk4ji5moeloa" path="res://player.gd" id="1_4flbx"]
+[ext_resource type="PackedScene" uid="uid://gwxfclicuy8r" path="res://game_ui.tscn" id="2_onrkg"]
 
 [node name="Player" type="Node2D"]
+unique_name_in_owner = true
 script = ExtResource("1_4flbx")
+metadata/_custom_type_script = "uid://cvcmowbsyxxjy"
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="Camera2D"]
+
+[node name="GameUI" parent="Camera2D/CanvasLayer" instance=ExtResource("2_onrkg")]
+metadata/_edit_use_anchors_ = true

@@ -1,6 +1,20 @@
-[gd_scene load_steps=2 format=3 uid="uid://gwxfclicuy8r"]
+[gd_scene load_steps=6 format=3 uid="uid://gwxfclicuy8r"]
 
 [ext_resource type="Script" uid="uid://dxxgthrgjtldv" path="res://game_ui.gd" id="1_ue6oa"]
+
+[sub_resource type="Gradient" id="Gradient_ue6oa"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_oaw30"]
+gradient = SubResource("Gradient_ue6oa")
+width = 200
+fill_to = Vector2(0.01, 0)
+
+[sub_resource type="Gradient" id="Gradient_mj8uy"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_3rlp6"]
+gradient = SubResource("Gradient_mj8uy")
+width = 200
+fill_to = Vector2(0.01, 0)
 
 [node name="GameUI" type="Control"]
 layout_mode = 3
@@ -41,6 +55,20 @@ item_count = 1
 max_columns = 4
 same_column_width = true
 fixed_column_width = 64
+
+[node name="StatusPanel" type="PanelContainer" parent="."]
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 30.0
+
+[node name="HealthBar" type="TextureProgressBar" parent="StatusPanel"]
+layout_mode = 2
+value = 50.0
+rounded = true
+texture_under = SubResource("GradientTexture2D_oaw30")
+texture_progress = SubResource("GradientTexture2D_3rlp6")
+tint_under = Color(0.545769, 0.100176, 0.0425092, 1)
+tint_progress = Color(1, 0, 0, 1)
 
 [connection signal="pressed" from="PickUpButton" to="." method="_on_pick_up_button_pressed"]
 [connection signal="pressed" from="InventoryButton" to="." method="_on_inventory_button_pressed"]
