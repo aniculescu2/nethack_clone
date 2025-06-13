@@ -56,10 +56,29 @@ max_columns = 4
 same_column_width = true
 fixed_column_width = 64
 
+[node name="ItemUsePanel" type="PanelContainer" parent="."]
+visible = false
+layout_mode = 2
+offset_left = 141.0
+offset_top = 85.0
+offset_right = 281.0
+offset_bottom = 151.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ItemUsePanel"]
+layout_mode = 2
+
+[node name="UseButton" type="Button" parent="ItemUsePanel/VBoxContainer"]
+layout_mode = 2
+text = "Use"
+
+[node name="DropButton" type="Button" parent="ItemUsePanel/VBoxContainer"]
+layout_mode = 2
+text = "Drop"
+
 [node name="StatusPanel" type="PanelContainer" parent="."]
 layout_mode = 0
 offset_right = 200.0
-offset_bottom = 30.0
+offset_bottom = 64.0
 
 [node name="HealthBar" type="TextureProgressBar" parent="StatusPanel"]
 layout_mode = 2
@@ -72,3 +91,9 @@ tint_progress = Color(1, 0, 0, 1)
 
 [connection signal="pressed" from="PickUpButton" to="." method="_on_pick_up_button_pressed"]
 [connection signal="pressed" from="InventoryButton" to="." method="_on_inventory_button_pressed"]
+[connection signal="empty_clicked" from="InventoryPanel/InventoryList" to="." method="_on_inventory_list_empty_clicked"]
+[connection signal="item_activated" from="InventoryPanel/InventoryList" to="." method="_on_inventory_list_item_activated"]
+[connection signal="item_clicked" from="InventoryPanel/InventoryList" to="." method="_on_inventory_list_item_clicked"]
+[connection signal="focus_exited" from="ItemUsePanel" to="." method="_on_item_use_panel_focus_exited"]
+[connection signal="pressed" from="ItemUsePanel/VBoxContainer/UseButton" to="." method="_on_use_button_pressed"]
+[connection signal="pressed" from="ItemUsePanel/VBoxContainer/DropButton" to="." method="_on_drop_button_pressed"]

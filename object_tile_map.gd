@@ -4,6 +4,9 @@ var tile_id = -1
 
 var object_dict = {}
 
+@onready var player = $Player
+@onready var game_ui = $Player/Camera2D/CanvasLayer/GameUI
+
 func _ready() -> void:
 	# Initialize the tile map layer
 	for child in get_children():
@@ -15,7 +18,8 @@ func _ready() -> void:
 			set_cell(local_to_map(child.position), child.element_id, Vector2i.ZERO)
 			object_dict[local_to_map(child.position)] = child
 
-	$Player/Camera2D/CanvasLayer/GameUI.object_picked_up.connect(_on_game_ui_object_picked_up)
+	game_ui.object_picked_up.connect(_on_game_ui_object_picked_up)
+	game_ui.drop_item.connect(_on_game_ui_drop_item)
 
 func move_element(element, target):
 	var start = local_to_map(element.position)
@@ -24,14 +28,29 @@ func move_element(element, target):
 	tile_id = get_cell_source_id(target)
 	set_cell(target, element.element_id, Vector2i.ZERO)
 	element.position = map_to_local(target)
-	if element == $Player:
+	if element == player:
 		if tile_on_spot and tile_on_spot.get_custom_data("Element_ID") == Element2D.CellType.ITEM:
-			$Player/Camera2D/CanvasLayer/GameUI/PickUpButton.show()
+			game_ui.get_node("PickUpButton").show()
 		else:
-			$Player/Camera2D/CanvasLayer/GameUI/PickUpButton.hide()
+			game_ui.get_node("PickUpButton").hide()
 
 func _on_game_ui_object_picked_up() -> void:
-	print("Object picked up")
 	tile_id = -1
-	$Player.add_to_inventory(object_dict[local_to_map($Player.position)])
-	object_dict.erase($Player.position)
+	player.add_to_inventory(object_dict[local_to_map(player.position)])
+	remove_child(object_dict[local_to_map(player.position)])
+	object_dict.erase(player.position)
+
+func _on_game_ui_drop_item(index: int) -> void:
+	if index >= 0 and index < player.inventory.size():
+		var item = player.inventory[index]
+		print("Dropping item: ", item.name)
+		print("item: ", item)
+		if not item:
+			print("Item is null, cannot drop.")
+			return
+		item.position = player.position
+		tile_id = item.element_id
+		object_dict[local_to_map(player.position)] = item
+		add_child(item)
+		player.drop_item(index)
+		game_ui.get_node("PickUpButton").show()
