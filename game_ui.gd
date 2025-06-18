@@ -2,6 +2,7 @@ extends Control
 
 signal object_picked_up
 signal drop_item(index: int)
+signal use_item(index: int)
 
 var selected_index: int = -1
 
@@ -50,6 +51,8 @@ func _on_use_button_pressed() -> void:
 	if selected_index != -1:
 		print("Using item at index: ", selected_index)
 		# Implement item use logic here
+		$InventoryPanel/InventoryList.remove_item(selected_index)
+		use_item.emit(selected_index)
 	else:
 		print("No item selected to use")
 	selected_index = -1

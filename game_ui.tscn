@@ -92,7 +92,6 @@ tint_progress = Color(1, 0, 0, 1)
 [connection signal="pressed" from="PickUpButton" to="." method="_on_pick_up_button_pressed"]
 [connection signal="pressed" from="InventoryButton" to="." method="_on_inventory_button_pressed"]
 [connection signal="empty_clicked" from="InventoryPanel/InventoryList" to="." method="_on_inventory_list_empty_clicked"]
-[connection signal="item_activated" from="InventoryPanel/InventoryList" to="." method="_on_inventory_list_item_activated"]
 [connection signal="item_clicked" from="InventoryPanel/InventoryList" to="." method="_on_inventory_list_item_clicked"]
 [connection signal="focus_exited" from="ItemUsePanel" to="." method="_on_item_use_panel_focus_exited"]
 [connection signal="pressed" from="ItemUsePanel/VBoxContainer/UseButton" to="." method="_on_use_button_pressed"]

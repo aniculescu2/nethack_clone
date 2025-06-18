@@ -151,7 +151,7 @@ script = ExtResource("7_5vw27")
 position = Vector2(96, 160)
 script = ExtResource("11_efxa6")
 potion_type = 0
-potion_amount = 30
+potion_amount = 5
 metadata/_custom_type_script = "uid://bimv1krwcmi4p"
 
 [node name="Player" parent="Map/ObjectTileMap" instance=ExtResource("2_1bvp3")]
