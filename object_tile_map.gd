@@ -2,6 +2,9 @@ extends TileMapLayer
 
 var tile_id = -1
 
+# Dictionary to hold object references by their map position
+# This allows for quick access to objects based on their position in the tile map
+# The key is the map position (Vector2i), and the value is a list of objects at that position
 var object_dict = {}
 
 @onready var player = $Player
@@ -16,7 +19,9 @@ func _ready() -> void:
 			# if child is Potion:
 			#     var alternate_tile = child.potion_type
 			set_cell(local_to_map(child.position), child.element_id, Vector2i.ZERO)
-			object_dict[local_to_map(child.position)] = child
+			if not object_dict.has(local_to_map(child.position)):
+				object_dict[local_to_map(child.position)] = []
+			object_dict[local_to_map(child.position)].append(child)
 
 	game_ui.object_picked_up.connect(_on_game_ui_object_picked_up)
 	game_ui.drop_item.connect(_on_game_ui_drop_item)
@@ -36,9 +41,10 @@ func move_element(element, target):
 
 func _on_game_ui_object_picked_up() -> void:
 	tile_id = -1
-	player.add_to_inventory(object_dict[local_to_map(player.position)])
-	remove_child(object_dict[local_to_map(player.position)])
-	object_dict.erase(player.position)
+	for item in object_dict[local_to_map(player.position)]:
+		player.add_to_inventory(item)
+		remove_child(item)
+		object_dict[local_to_map(player.position)].erase(item)
 
 func _on_game_ui_drop_item(index: int) -> void:
 	if index >= 0 and index < player.inventory.size():
