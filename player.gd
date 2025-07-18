@@ -28,7 +28,7 @@ func add_to_inventory(item):
 	inventory.append(item)
 	game_ui.update_inventory(inventory)
 
-func drop_item(index: int) -> void:
+func remove_item(index: int) -> void:
 	inventory.remove_at(index)
 	game_ui.update_inventory(inventory)
 

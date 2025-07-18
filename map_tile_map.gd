@@ -166,7 +166,13 @@ func move(node: Element2D, direction: Vector2i) -> bool:
 			return false
 		Element2D.CellType.LOCKED_DOOR:
 			# TODO: Implement locked door logic
-			return false
+			# Check type of door (alternative tile)
+			var door_type: int = get_cell_alternative_tile(target)
+			var is_unlocked = unlock_door(node, target, door_type)
+			if is_unlocked:
+				open_door(target)
+				update_light(start)
+			return is_unlocked
 		Element2D.CellType.CLOSED_DOOR:
 			open_door(target)
 			move_signal.emit(node, target)
@@ -181,6 +187,17 @@ func move(node: Element2D, direction: Vector2i) -> bool:
 func open_door(target: Vector2i) -> void:
 	set_cell(target, 0, Vector2i.ZERO, 0)
 	_astar.set_point_solid(target, false)
+
+func unlock_door(node: Element2D, target: Vector2i, door_type: int) -> bool:
+	# Check if the player has the key to unlock the door
+	if node.element_id == Element2D.CellType.ACTOR and node.inventory.size() > 0:
+		for item in node.inventory:
+			if item is Key and item.door_key == door_type:
+				print("Door unlocked with key: ", item.name)
+				node.remove_item(node.inventory.find(item)) # Remove the key from inventory
+				return true
+	print("No key found to unlock the door.")
+	return false
 
 func update_light(target: Vector2i) -> void:
 	# Search adjacent tiles and lighten color modulation

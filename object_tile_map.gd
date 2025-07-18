@@ -78,7 +78,7 @@ func _on_game_ui_drop_item(index: int) -> void:
 			object_dict[local_to_map(player.position)] = []
 		object_dict[local_to_map(player.position)].append(item)
 		add_child(item)
-		player.drop_item(index)
+		player.remove_item(index)
 		game_ui.get_node("PickUpButton").show()
 
 func _on_floor_object_picked_up(index) -> void:
