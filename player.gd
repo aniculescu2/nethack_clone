@@ -12,6 +12,8 @@ var health: int:
 var inventory = []
 
 func _ready() -> void:
+	element_type = Element2D.CellType.ACTOR
+	element_id = 0 # Unique identifier for the player
 	health = max_health # Initial health
 	game_ui.get_node("StatusPanel/HealthBar").max_value = max_health
 	game_ui.update_inventory(inventory)
@@ -31,11 +33,17 @@ func drop_item(index: int) -> void:
 	game_ui.update_inventory(inventory)
 
 func _on_use_item(index: int) -> void:
-	var item = inventory.pop_at(index)
-	game_ui.update_inventory(inventory)
+	var item = inventory.get(index)
 	if item:
 		print("Using item: ", item.name)
 		# Implement item use logic here, e.g., apply effects
-		item.use()
+		var used: bool = item._use()
+		if used:
+			print("Item used and removed from inventory: ", item.name)
+			inventory.remove_at(index) # Remove item from inventory
+			game_ui.update_inventory(inventory)
+			item.queue_free() # Remove item from the game
+		else:
+			print("Item not used, remains in inventory: ", item.name)
 	else:
 		print("No item found at index: ", index)

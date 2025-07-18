@@ -20,10 +20,11 @@ enum PotionType {
 @export var potion_effect: String
 func _ready() -> void:
 	print("Potion ready: Type: %s, Amount: %d, Duration: %d seconds" % [PotionType.find_key(potion_type), potion_amount, potion_duration])
-	element_id = Element2D.CellType.ITEM
+	element_id = Element2D.ItemType.POTION
+	element_type = Element2D.CellType.ITEM
 	texture_path = "res://textures/potion.png"
 
-func use() -> void:
+func _use() -> bool:
 	print("Using potion: Type: %s, Amount: %d, Duration: %d seconds" % [PotionType.find_key(potion_type), potion_amount, potion_duration])
 	# Implement potion effect logic here
 	match potion_type:
@@ -43,3 +44,4 @@ func use() -> void:
 		PotionType.UNKNOWN:
 			print("Unknown potion type, no effect applied")
 	queue_free() # Remove potion from the game after use
+	return true # Indicate that the potion was used up and should be removed

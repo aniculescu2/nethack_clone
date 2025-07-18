@@ -1,8 +1,9 @@
-[gd_scene load_steps=22 format=4 uid="uid://baowome0sfn0x"]
+[gd_scene load_steps=26 format=4 uid="uid://baowome0sfn0x"]
 
 [ext_resource type="Texture2D" uid="uid://sbgbkcol3rcb" path="res://textures/stone_floor_small.png" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://cuhg8cfw6e0r5" path="res://player.tscn" id="2_1bvp3"]
 [ext_resource type="Texture2D" uid="uid://csk7mvc0q55t4" path="res://textures/open_door.png" id="2_4c57u"]
+[ext_resource type="Script" uid="uid://bkpaay2shs2m4" path="res://map_control.gd" id="2_ycdy4"]
 [ext_resource type="Texture2D" uid="uid://bhu66ehor1xy1" path="res://textures/knight_small.png" id="3_1bvp3"]
 [ext_resource type="Texture2D" uid="uid://c52n5ll0u0hws" path="res://textures/wall_small.png" id="3_lquwl"]
 [ext_resource type="Script" uid="uid://dkwlyoood5owx" path="res://map.gd" id="4_lquwl"]
@@ -11,7 +12,9 @@
 [ext_resource type="Texture2D" uid="uid://daw0bvxnif8o8" path="res://textures/closed_door.jpg" id="6_kek77"]
 [ext_resource type="Script" uid="uid://di71p8xq5e0xq" path="res://object_tile_map.gd" id="7_5vw27"]
 [ext_resource type="Texture2D" uid="uid://bo104hvyoslff" path="res://textures/potion.png" id="9_dg77c"]
-[ext_resource type="Script" uid="uid://bimv1krwcmi4p" path="res://potion.gd" id="11_efxa6"]
+[ext_resource type="Texture2D" uid="uid://dl1mfc6odrqbi" path="res://textures/key_small.png" id="11_vivmo"]
+[ext_resource type="Script" uid="uid://cr3hc2udkabfi" path="res://objects/key.gd" id="12_w48qg"]
+[ext_resource type="Script" uid="uid://bimv1krwcmi4p" path="res://objects/potion.gd" id="12_ycdy4"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_dg77c"]
 texture = ExtResource("2_4c57u")
@@ -124,21 +127,33 @@ texture_region_size = Vector2i(64, 64)
 texture = ExtResource("9_dg77c")
 texture_region_size = Vector2i(64, 64)
 0:0/0 = 0
-0:0/0/custom_data_0 = 6
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2cqfq"]
+texture = ExtResource("11_vivmo")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_4c57u"]
 tile_size = Vector2i(64, 64)
-custom_data_layer_0/name = "Element_ID"
-custom_data_layer_0/type = 2
 sources/0 = SubResource("TileSetAtlasSource_kek77")
-sources/6 = SubResource("TileSetAtlasSource_w48qg")
+sources/2 = SubResource("TileSetAtlasSource_2cqfq")
+sources/1 = SubResource("TileSetAtlasSource_w48qg")
 
 [node name="Main" type="Node"]
 
 [node name="Map" type="Node" parent="."]
 script = ExtResource("4_lquwl")
 
-[node name="MapTileMap" type="TileMapLayer" parent="Map"]
+[node name="MapControl" type="Control" parent="Map"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_ycdy4")
+
+[node name="MapTileMap" type="TileMapLayer" parent="Map/MapControl"]
 tile_map_data = PackedByteArray("AAABAAAAAQAAAAAAAAAAAAAAAQAAAAAAAAACAAAAAQAAAAAAAAADAAAAAQAAAAAAAAAEAAAAAQAAAAAAAAAFAAAAAQAAAAAAAAAGAAAAAQAAAAAAAAAHAAAAAQAAAAAAAAAIAAAAAQAAAAAAAAAJAAAAAQAAAAAAAAAKAAAAAQAAAAAAAAALAAAAAQAAAAAAAAAMAAAAAQAAAAAAAAANAAAAAQAAAAAAAAAOAAAAAQAAAAAAAAAPAAAAAQAAAAAAAAAQAAAAAQAAAAAAAAARAAAAAQAAAAAAAAARAAEAAQAAAAAAAAARAAIAAQAAAAAAAAARAAMAAQAAAAAAAAARAAQAAQAAAAAAAAARAAUAAQAAAAAAAAARAAYAAQAAAAAAAAARAAcAAQAAAAAAAAARAAgAAQAAAAAAAAARAAkAAQAAAAAAAAAQAAkAAQAAAAAAAAAPAAkAAQAAAAAAAAAOAAkAAQAAAAAAAAANAAkAAQAAAAAAAAAMAAkAAQAAAAAAAAALAAkAAQAAAAAAAAAKAAkAAQAAAAAAAAAJAAkAAQAAAAAAAAAIAAkAAQAAAAAAAAAHAAkAAQAAAAAAAAAGAAkAAQAAAAAAAAAFAAkAAQAAAAAAAAAEAAkAAQAAAAAAAAADAAkAAQAAAAAAAAACAAkAAQAAAAAAAAAAAAkAAQAAAAAAAAAAAAgAAQAAAAAAAAAAAAcAAQAAAAAAAAAAAAYAAQAAAAAAAAAAAAUAAQAAAAAAAAAAAAQAAQAAAAAAAAAAAAMAAQAAAAAAAAAAAAIAAQAAAAAAAAAAAAEAAQAAAAAAAAACAAEAAQAAAAAAAAACAAIAAQAAAAAAAAACAAMAAQAAAAAAAAACAAQAAQAAAAAAAAAEAAQAAQAAAAAAAAAEAAMAAQAAAAAAAAAEAAIAAQAAAAAAAAAEAAEAAQAAAAAAAAADAAEAAQAAAAAAAAACAAYAAQAAAAAAAAACAAcAAQAAAAAAAAADAAYAAQAAAAAAAAAEAAYAAQAAAAAAAAAFAAYAAQAAAAAAAAADAAcAAQAAAAAAAAAFAAcAAQAAAAAAAAAHAAMAAQAAAAAAAAAHAAIAAQAAAAAAAAAHAAEAAQAAAAAAAAAGAAEAAQAAAAAAAAAGAAIAAQAAAAAAAAAGAAMAAQAAAAAAAAAJAAcAAQAAAAAAAAAKAAcAAQAAAAAAAAALAAcAAQAAAAAAAAAMAAcAAQAAAAAAAAANAAcAAQAAAAAAAAAOAAcAAQAAAAAAAAAPAAcAAQAAAAAAAAAQAAcAAQAAAAAAAAAKAAMAAQAAAAAAAAALAAQAAQAAAAAAAAAMAAQAAQAAAAAAAAANAAUAAQAAAAAAAAAOAAYAAQAAAAAAAAAKAAUAAQAAAAAAAAAJAAQAAQAAAAAAAAAKAAQAAQAAAAAAAAALAAUAAQAAAAAAAAAKAAIAAQAAAAAAAAALAAIAAQAAAAAAAAAMAAIAAQAAAAAAAAANAAIAAQAAAAAAAAAOAAIAAQAAAAAAAAAPAAIAAQAAAAAAAAAOAAMAAQAAAAAAAAAOAAQAAQAAAAAAAAAOAAUAAQAAAAAAAAANAAQAAQAAAAAAAAALAAMAAQAAAAAAAAAMAAMAAQAAAAAAAAANAAMAAQAAAAAAAAAJAAUAAQAAAAAAAAABAAkAAQAAAAAAAAACAAUAAgAAAAAAAAABAAEAAwAAAAAAAAABAAIAAwAAAAAAAAABAAMAAwAAAAAAAAABAAQAAwAAAAAAAAABAAUAAwAAAAAAAAABAAYAAwAAAAAAAAABAAcAAwAAAAAAAAABAAgAAwAAAAAAAAACAAgAAwAAAAAAAAADAAgAAwAAAAAAAAAEAAgAAwAAAAAAAAAFAAgAAwAAAAAAAAAGAAgAAwAAAAAAAAAHAAgAAwAAAAAAAAAIAAgAAwAAAAAAAAAJAAgAAwAAAAAAAAAKAAgAAwAAAAAAAAALAAgAAwAAAAAAAAAMAAgAAwAAAAAAAAANAAgAAwAAAAAAAAAOAAgAAwAAAAAAAAAPAAgAAwAAAAAAAAAQAAgAAwAAAAAAAAAEAAcAAwAAAAAAAAAGAAcAAwAAAAAAAAAGAAYAAwAAAAAAAAAGAAUAAwAAAAAAAAAGAAQAAwAAAAAAAAAFAAUAAwAAAAAAAAAEAAUAAwAAAAAAAAADAAUAAwAAAAAAAAADAAIAAwAAAAAAAAADAAMAAwAAAAAAAAADAAQAAwAAAAAAAAAFAAEAAwAAAAAAAAAFAAIAAwAAAAAAAAAFAAMAAwAAAAAAAAAFAAQAAwAAAAAAAAAHAAQAAwAAAAAAAAAIAAQAAwAAAAAAAAAIAAMAAwAAAAAAAAAIAAIAAwAAAAAAAAAIAAEAAwAAAAAAAAAJAAEAAwAAAAAAAAAKAAEAAwAAAAAAAAALAAEAAwAAAAAAAAAMAAEAAwAAAAAAAAANAAEAAwAAAAAAAAAOAAEAAwAAAAAAAAAPAAEAAwAAAAAAAAAQAAEAAwAAAAAAAAAQAAIAAwAAAAAAAAAQAAMAAwAAAAAAAAAQAAQAAwAAAAAAAAAQAAUAAwAAAAAAAAAQAAYAAwAAAAAAAAAPAAMAAwAAAAAAAAAPAAQAAwAAAAAAAAAPAAUAAwAAAAAAAAAPAAYAAwAAAAAAAAAJAAIAAwAAAAAAAAAJAAMAAwAAAAAAAAAIAAUAAwAAAAAAAAAHAAUAAwAAAAAAAAAHAAYAAwAAAAAAAAAIAAYAAwAAAAAAAAAJAAYABAAAAAAAAAAKAAYAAwAAAAAAAAALAAYAAwAAAAAAAAAMAAYAAwAAAAAAAAANAAYAAwAAAAAAAAAMAAUAAwAAAAAAAAAIAAcAAwAAAAAAAAAHAAcAAwAAAAAAAAA=")
 tile_set = SubResource("TileSet_lquwl")
 script = ExtResource("6_5vw27")
@@ -147,12 +162,20 @@ script = ExtResource("6_5vw27")
 tile_set = SubResource("TileSet_4c57u")
 script = ExtResource("7_5vw27")
 
+[node name="Key" type="Node2D" parent="Map/ObjectTileMap"]
+position = Vector2(550, 421)
+script = ExtResource("12_w48qg")
+metadata/_custom_type_script = "uid://cr3hc2udkabfi"
+
 [node name="Potion" type="Node2D" parent="Map/ObjectTileMap"]
 position = Vector2(96, 160)
-script = ExtResource("11_efxa6")
-potion_type = 0
-potion_amount = 5
+script = ExtResource("12_ycdy4")
 metadata/_custom_type_script = "uid://bimv1krwcmi4p"
 
 [node name="Player" parent="Map/ObjectTileMap" instance=ExtResource("2_1bvp3")]
 position = Vector2(96, 96)
+
+[node name="Potion2" type="Node2D" parent="Map/ObjectTileMap"]
+position = Vector2(96, 160)
+script = ExtResource("12_ycdy4")
+metadata/_custom_type_script = "uid://bimv1krwcmi4p"

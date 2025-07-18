@@ -21,9 +21,11 @@ func _ready() -> void:
 			set_cell(local_to_map(child.position), child.element_id, Vector2i.ZERO)
 			if not object_dict.has(local_to_map(child.position)):
 				object_dict[local_to_map(child.position)] = []
-			object_dict[local_to_map(child.position)].append(child)
+			if child.element_type == Element2D.CellType.ITEM:
+				object_dict[local_to_map(child.position)].append(child)
 
-	game_ui.object_picked_up.connect(_on_game_ui_object_picked_up)
+	game_ui.all_objects_picked_up.connect(_on_game_ui_object_picked_up)
+	game_ui.object_picked_up.connect(_on_floor_object_picked_up)
 	game_ui.drop_item.connect(_on_game_ui_drop_item)
 
 func move_element(element, target):
@@ -34,17 +36,33 @@ func move_element(element, target):
 	set_cell(target, element.element_id, Vector2i.ZERO)
 	element.position = map_to_local(target)
 	if element == player:
-		if tile_on_spot and tile_on_spot.get_custom_data("Element_ID") == Element2D.CellType.ITEM:
+		var is_item: bool = false
+		if tile_on_spot and object_dict.has(target):
+			for item in object_dict[target]:
+				if item.element_type == Element2D.CellType.ITEM:
+					is_item = true
+					break
+		if is_item:
+			# Show the pickup button if there are items on the tile
 			game_ui.get_node("PickUpButton").show()
 		else:
+			# Hide the pickup button if there are no items
 			game_ui.get_node("PickUpButton").hide()
+
+		# Update floor dict to show items on the current tile
+		if object_dict.has(target):
+			game_ui.set_floor(object_dict[target])
+		else:
+			game_ui.set_floor([])
 
 func _on_game_ui_object_picked_up() -> void:
 	tile_id = -1
+	print("items: ", object_dict[local_to_map(player.position)])
 	for item in object_dict[local_to_map(player.position)]:
+		print("Picking up item: ", item.name)
 		player.add_to_inventory(item)
 		remove_child(item)
-		object_dict[local_to_map(player.position)].erase(item)
+	object_dict[local_to_map(player.position)] = []
 
 func _on_game_ui_drop_item(index: int) -> void:
 	if index >= 0 and index < player.inventory.size():
@@ -56,7 +74,25 @@ func _on_game_ui_drop_item(index: int) -> void:
 			return
 		item.position = player.position
 		tile_id = item.element_id
-		object_dict[local_to_map(player.position)] = item
+		if not object_dict.has(local_to_map(player.position)):
+			object_dict[local_to_map(player.position)] = []
+		object_dict[local_to_map(player.position)].append(item)
 		add_child(item)
 		player.drop_item(index)
 		game_ui.get_node("PickUpButton").show()
+
+func _on_floor_object_picked_up(index) -> void:
+	if index >= 0 and index < object_dict[local_to_map(player.position)].size():
+		var item = object_dict[local_to_map(player.position)][index]
+		print("Picking up item from floor: ", item.name)
+		player.add_to_inventory(item)
+		remove_child(item)
+		object_dict[local_to_map(player.position)].remove_at(index)
+		# Set tile_id to next item if available
+		if object_dict[local_to_map(player.position)].size() > 0:
+			tile_id = object_dict[local_to_map(player.position)][0].element_id
+		else:
+			tile_id = -1
+			game_ui.get_node("PickUpButton").hide()
+	else:
+		print("Invalid item selected to pick up")
