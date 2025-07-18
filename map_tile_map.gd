@@ -52,7 +52,7 @@ func _ready() -> void:
 				if element_id == Element2D.CellType.WALL || element_id == Element2D.CellType.LOCKED_DOOR:
 					_astar.set_point_solid(pos)
 
-func _input(event):
+func handle_input(event):
 	# Mouse in viewport coordinates.
 	if event is InputEventMouseButton and event.pressed:
 		match event.button_index:
@@ -233,6 +233,7 @@ func update_light(target: Vector2i) -> void:
 
 		_in_sight.append(current)
 		set_cell(current, tile_id, Vector2i.ZERO, 0)
+		#Todo: remove items if not in _in_sight
 
 		if is_closed:
 			# If the current tile is a wall, stop searching
