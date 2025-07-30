@@ -13,6 +13,7 @@ func _ready() -> void:
 	$FloorPanel.hide()
 	$ItemUsePanel.hide()
 	$FloorUsePanel.hide()
+	$StatusPanel/HBoxContainer/GoldLabel.text = "0"
 
 func _unhandled_key_input(event: InputEvent) -> void:
 	if event.is_action_pressed("toggle_inventory"):
@@ -47,9 +48,9 @@ func update_inventory(inventory: Array) -> void:
 		$InventoryPanel/InventoryList.add_item(item.name, item_texture)
 
 func _on_player_health_changed(health: int) -> void:
-	$StatusPanel/HealthBar.set_value_no_signal(health)
+	$StatusPanel/HBoxContainer/HealthBar.set_value_no_signal(health)
 	if health <= 0:
-		$StatusPanel/HealthBar.set_value_no_signal(0)
+		$StatusPanel/HBoxContainer/HealthBar.set_value_no_signal(0)
 		print("Player has died")
 		# Handle player death logic here, e.g., show game over screen
 
@@ -117,3 +118,7 @@ func _on_floor_list_empty_clicked(at_position: Vector2, mouse_button_index: int)
 	if mouse_button_index == MOUSE_BUTTON_LEFT:
 		selected_index = -1
 		$FloorUsePanel.hide()
+
+func _on_gold_changed(new_gold: int) -> void:
+	$StatusPanel/HBoxContainer/GoldLabel.text = "%d" % new_gold
+	print("Gold updated: ", new_gold)

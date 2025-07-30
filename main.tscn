@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=4 uid="uid://baowome0sfn0x"]
+[gd_scene load_steps=29 format=4 uid="uid://baowome0sfn0x"]
 
 [ext_resource type="Texture2D" uid="uid://sbgbkcol3rcb" path="res://textures/stone_floor_small.png" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://cuhg8cfw6e0r5" path="res://player.tscn" id="2_1bvp3"]
@@ -14,7 +14,9 @@
 [ext_resource type="Texture2D" uid="uid://bo104hvyoslff" path="res://textures/potion.png" id="9_dg77c"]
 [ext_resource type="Texture2D" uid="uid://dl1mfc6odrqbi" path="res://textures/key_small.png" id="11_vivmo"]
 [ext_resource type="Script" uid="uid://cr3hc2udkabfi" path="res://objects/key.gd" id="12_w48qg"]
+[ext_resource type="Texture2D" uid="uid://bxhtq0n1v2oso" path="res://textures/gold.png" id="12_yaehf"]
 [ext_resource type="Script" uid="uid://bimv1krwcmi4p" path="res://objects/potion.gd" id="12_ycdy4"]
+[ext_resource type="Script" uid="uid://b87xpgpimpk60" path="res://objects/gold.gd" id="16_2cqfq"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_dg77c"]
 texture = ExtResource("2_4c57u")
@@ -133,11 +135,17 @@ texture = ExtResource("11_vivmo")
 texture_region_size = Vector2i(64, 64)
 0:0/0 = 0
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_074og"]
+texture = ExtResource("12_yaehf")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+
 [sub_resource type="TileSet" id="TileSet_4c57u"]
 tile_size = Vector2i(64, 64)
 sources/0 = SubResource("TileSetAtlasSource_kek77")
 sources/2 = SubResource("TileSetAtlasSource_2cqfq")
 sources/1 = SubResource("TileSetAtlasSource_w48qg")
+sources/3 = SubResource("TileSetAtlasSource_074og")
 
 [node name="Main" type="Node"]
 
@@ -179,3 +187,13 @@ position = Vector2(96, 96)
 position = Vector2(96, 160)
 script = ExtResource("12_ycdy4")
 metadata/_custom_type_script = "uid://bimv1krwcmi4p"
+
+[node name="Gold" type="Node2D" parent="Map/ObjectTileMap"]
+position = Vector2(352, 96)
+script = ExtResource("16_2cqfq")
+amount = 10
+
+[node name="Gold2" type="Node2D" parent="Map/ObjectTileMap"]
+position = Vector2(352, 151)
+script = ExtResource("16_2cqfq")
+amount = 10
