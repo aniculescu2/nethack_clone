@@ -5,6 +5,7 @@ const CELL_SIZE = Vector2i(64, 64)
 enum State {IDLE, FOLLOW}
 
 signal move_signal
+signal light_updated
 
 # The object for pathfinding on 2D grids.
 var _astar = AStarGrid2D.new()
@@ -51,6 +52,8 @@ func _ready() -> void:
 				var element_id = tile_data.get_custom_data("Element_ID")
 				if element_id == Element2D.CellType.WALL || element_id == Element2D.CellType.LOCKED_DOOR:
 					_astar.set_point_solid(pos)
+
+	GlobalSignals.update_light.connect(update_light)
 
 func handle_input(event):
 	# Mouse in viewport coordinates.
@@ -274,3 +277,9 @@ func update_light(target: Vector2i) -> void:
 	for current in _visited:
 		var tile_id = get_cell_source_id(current)
 		set_cell(current, tile_id, Vector2i.ZERO, 1)
+
+	light_updated.emit(_in_sight)
+
+#
+func object_map_ready():
+	update_light(local_to_map(_player_node.position))

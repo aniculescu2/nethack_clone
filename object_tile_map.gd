@@ -18,7 +18,7 @@ func _ready() -> void:
 			# TODO: Use different potion sprites based on potion type
 			# if child is Potion:
 			#     var alternate_tile = child.potion_type
-			set_cell(local_to_map(child.position), child.element_id, Vector2i.ZERO)
+			# set_cell(local_to_map(child.position), child.element_id, Vector2i.ZERO)
 			if not object_dict.has(local_to_map(child.position)):
 				object_dict[local_to_map(child.position)] = []
 			if child.element_type == Element2D.CellType.ITEM:
@@ -65,6 +65,7 @@ func _on_game_ui_object_picked_up() -> void:
 	object_dict[local_to_map(player.position)] = []
 
 func _on_game_ui_drop_item(index: int) -> void:
+	var player_position = local_to_map(player.position)
 	if index >= 0 and index < player.inventory.size():
 		var item = player.inventory[index]
 		print("Dropping item: ", item.name)
@@ -74,25 +75,35 @@ func _on_game_ui_drop_item(index: int) -> void:
 			return
 		item.position = player.position
 		tile_id = item.element_id
-		if not object_dict.has(local_to_map(player.position)):
-			object_dict[local_to_map(player.position)] = []
-		object_dict[local_to_map(player.position)].append(item)
+		if not object_dict.has(player_position):
+			object_dict[player_position] = []
+		object_dict[player_position].append(item)
 		add_child(item)
 		player.remove_item(index)
 		game_ui.get_node("PickUpButton").show()
 
 func _on_floor_object_picked_up(index) -> void:
-	if index >= 0 and index < object_dict[local_to_map(player.position)].size():
-		var item = object_dict[local_to_map(player.position)][index]
+	var player_position = local_to_map(player.position)
+	if index >= 0 and index < object_dict[player_position].size():
+		var item = object_dict[player_position][index]
 		print("Picking up item from floor: ", item.name)
 		player.add_to_inventory(item)
 		remove_child(item)
-		object_dict[local_to_map(player.position)].remove_at(index)
+		object_dict[player_position].remove_at(index)
 		# Set tile_id to next item if available
-		if object_dict[local_to_map(player.position)].size() > 0:
-			tile_id = object_dict[local_to_map(player.position)][0].element_id
+		if object_dict[player_position].size() > 0:
+			tile_id = object_dict[player_position][0].element_id
 		else:
 			tile_id = -1
 			game_ui.get_node("PickUpButton").hide()
 	else:
 		print("Invalid item selected to pick up")
+
+# Items are hidden until in line of sight of player
+func update_object_light(in_sight):
+	for loc in in_sight:
+		if object_dict.has(loc) and not object_dict[loc].is_empty():
+				if loc != local_to_map(player.position):
+					set_cell(loc, object_dict[loc][0].element_id, Vector2i.ZERO)
+
+	set_cell(local_to_map(player.position), player.element_id, Vector2i.ZERO)
