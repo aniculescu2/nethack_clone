@@ -27,6 +27,9 @@ func _ready() -> void:
 	game_ui.get_node("StatusPanel/HBoxContainer/HealthBar").max_value = max_health
 	game_ui.update_inventory(inventory)
 	game_ui.use_item.connect(_on_use_item)
+	game_ui.unequipped_item.connect(_on_unequipped_item)
+
+	# Connect to global signal for health increase (e.g., from potions)
 	GlobalSignals.increase_health.connect(increase_health)
 
 func increase_health(amount: int) -> void:
@@ -78,3 +81,12 @@ func _on_use_item(index: int) -> void:
 			print("Item not used, remains in inventory: ", item.name)
 	else:
 		print("No item found at index: ", index)
+
+func _on_unequipped_item(equip_index: String) -> void:
+	if equipment.has(equip_index) and equipment[equip_index]:
+		print("Unequipping item from: ", equip_index)
+		add_to_inventory(equipment[equip_index])
+		equipment[equip_index] = null
+		game_ui.update_equipment(equipment)
+	else:
+		print("No item equipped in: ", equip_index)

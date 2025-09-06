@@ -4,14 +4,17 @@ signal all_objects_picked_up
 signal object_picked_up
 signal drop_item(index: int)
 signal use_item(index: int)
+signal unequipped_item(equip_index: String)
 
 var selected_index: int = -1
+var equip_index: String = ""
 
 func _ready() -> void:
 	$PickUpButton.hide()
 	$InventoryPanel.hide()
 	$FloorPanel.hide()
 	$ItemUsePanel.hide()
+	$EquipUsePanel.hide()
 	$FloorUsePanel.hide()
 	$EquipPanel.hide()
 	$StatusPanel/HBoxContainer/GoldLabel.text = "0"
@@ -159,30 +162,56 @@ func _on_head_button_pressed() -> void:
 	if $EquipPanel/Panel/HeadButton/TextureRect.texture == null:
 		print("No item equipped in head")
 	else:
-		print("Equipping item in head")
+		equip_index = "head"
+		$EquipUsePanel.position = $EquipPanel/Panel/HeadButton.global_position
+		$EquipUsePanel.show()
+		$EquipUsePanel.grab_focus()
 
 func _on_right_arm_button_pressed() -> void:
 	if $EquipPanel/Panel/RightArmButton/TextureRect.texture == null:
 		print("No item equipped in right arm")
 	else:
-		print("Equipping item in right arm")
+		equip_index = "right_arm"
+		$EquipUsePanel.position = $EquipPanel/Panel/RightArmButton.global_position
+		$EquipUsePanel.show()
+		$EquipUsePanel.grab_focus()
 
 func _on_left_arm_button_pressed() -> void:
 	if $EquipPanel/Panel/LeftArmButton/TextureRect.texture == null:
 		print("No item equipped in left arm")
 	else:
-		print("Equipping item in left arm")
-
+		equip_index = "left_arm"
+		$EquipUsePanel.position = $EquipPanel/Panel/LeftArmButton.global_position
+		$EquipUsePanel.show()
+		$EquipUsePanel.grab_focus()
 
 func _on_legs_button_pressed() -> void:
 	if $EquipPanel/Panel/LegsButton/TextureRect.texture == null:
 		print("No item equipped in legs")
 	else:
-		print("Equipping item in legs")
-
+		equip_index = "legs"
+		$EquipUsePanel.position = $EquipPanel/Panel/LegsButton.global_position
+		$EquipUsePanel.show()
+		$EquipUsePanel.grab_focus()
 
 func _on_feet_button_pressed() -> void:
 	if $EquipPanel/Panel/FeetButton/TextureRect.texture == null:
 		print("No item equipped in feet")
 	else:
-		print("Equipping item in feet")
+		equip_index = "feet"
+		$EquipUsePanel.position = $EquipPanel/Panel/FeetButton.global_position
+		$EquipUsePanel.show()
+		$EquipUsePanel.grab_focus()
+
+func _on_unequip_button_pressed() -> void:
+	if equip_index == "":
+		print("No item equipped")
+	else:
+		print("Unequipping item from ", equip_index)
+		unequipped_item.emit(equip_index)
+		equip_index = ""
+		$EquipUsePanel.hide()
+
+
+func _on_equp_panel_panel_gui_input(event: InputEvent) -> void:
+	$EquipUsePanel.hide()
