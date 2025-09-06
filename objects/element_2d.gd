@@ -15,6 +15,7 @@ enum ItemType {
 	POTION = 1,
 	KEY,
 	GOLD,
+	SWORD,
 }
 
 @export var element_type: CellType

@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=4 uid="uid://baowome0sfn0x"]
+[gd_scene load_steps=32 format=4 uid="uid://baowome0sfn0x"]
 
 [ext_resource type="Texture2D" uid="uid://sbgbkcol3rcb" path="res://textures/stone_floor_small.png" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://cuhg8cfw6e0r5" path="res://player.tscn" id="2_1bvp3"]
@@ -16,7 +16,9 @@
 [ext_resource type="Script" uid="uid://cr3hc2udkabfi" path="res://objects/key.gd" id="12_w48qg"]
 [ext_resource type="Texture2D" uid="uid://bxhtq0n1v2oso" path="res://textures/gold.png" id="12_yaehf"]
 [ext_resource type="Script" uid="uid://bimv1krwcmi4p" path="res://objects/potion.gd" id="12_ycdy4"]
+[ext_resource type="Texture2D" uid="uid://8wfklpnuxr" path="res://textures/sword.png" id="13_cegan"]
 [ext_resource type="Script" uid="uid://b87xpgpimpk60" path="res://objects/gold.gd" id="16_2cqfq"]
+[ext_resource type="Script" uid="uid://d2ho7ueh135bn" path="res://objects/sword.gd" id="19_82xsv"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_dg77c"]
 texture = ExtResource("2_4c57u")
@@ -140,12 +142,18 @@ texture = ExtResource("12_yaehf")
 texture_region_size = Vector2i(64, 64)
 0:0/0 = 0
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_getpj"]
+texture = ExtResource("13_cegan")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+
 [sub_resource type="TileSet" id="TileSet_4c57u"]
 tile_size = Vector2i(64, 64)
 sources/0 = SubResource("TileSetAtlasSource_kek77")
 sources/2 = SubResource("TileSetAtlasSource_2cqfq")
 sources/1 = SubResource("TileSetAtlasSource_w48qg")
 sources/3 = SubResource("TileSetAtlasSource_074og")
+sources/4 = SubResource("TileSetAtlasSource_getpj")
 
 [node name="Main" type="Node"]
 
@@ -197,3 +205,17 @@ amount = 10
 position = Vector2(352, 151)
 script = ExtResource("16_2cqfq")
 amount = 10
+
+[node name="Sword" type="Node2D" parent="Map/ObjectTileMap"]
+position = Vector2(96, 400)
+script = ExtResource("19_82xsv")
+element_type = 6
+element_id = 4
+metadata/_custom_type_script = "uid://d2ho7ueh135bn"
+
+[node name="Sword2" type="Node2D" parent="Map/ObjectTileMap"]
+position = Vector2(96, 400)
+script = ExtResource("19_82xsv")
+element_type = 6
+element_id = 4
+metadata/_custom_type_script = "uid://d2ho7ueh135bn"

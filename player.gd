@@ -11,6 +11,8 @@ var health: int:
 
 var inventory = []
 
+var equipment = {"head": null, "right_arm": null, "left_arm": null, "legs": null, "feet": null}
+
 var gold: int:
 	set(value):
 		gold = max(value, 0) # Ensure gold cannot be negative
@@ -19,6 +21,8 @@ var gold: int:
 func _ready() -> void:
 	element_type = Element2D.CellType.ACTOR
 	element_id = 0 # Unique identifier for the player
+
+	# Set health
 	health = max_health # Initial health
 	game_ui.get_node("StatusPanel/HBoxContainer/HealthBar").max_value = max_health
 	game_ui.update_inventory(inventory)
@@ -37,7 +41,7 @@ func add_to_inventory(item):
 		inventory.append(item)
 		game_ui.update_inventory(inventory)
 
-func remove_item(index: int) -> void:
+func remove_from_inventory(index: int) -> void:
 	inventory.remove_at(index)
 	game_ui.update_inventory(inventory)
 
@@ -47,11 +51,29 @@ func _on_use_item(index: int) -> void:
 		print("Using item: ", item.name)
 		# Implement item use logic here, e.g., apply effects
 		var used: bool = item._use()
+		var equip_index = ""
+		print("element_id")
+		print(item.element_id)
+		match item.element_id:
+			Element2D.ItemType.SWORD:
+				equip_index = "right_arm"
+
+		print("equip_index")
+		print(equip_index)
+		if equip_index != "":
+			# Unequip whatever is equipped
+			print("Checking equipment: ", equipment[equip_index])
+			if equipment[equip_index]:
+				print("Unequipping previous item from: ", equip_index)
+				add_to_inventory(equipment[equip_index])
+			equipment[equip_index] = item
+			game_ui.update_equipment(equipment)
+
 		if used:
 			print("Item used and removed from inventory: ", item.name)
-			inventory.remove_at(index) # Remove item from inventory
-			game_ui.update_inventory(inventory)
-			item.queue_free() # Remove item from the game
+			remove_from_inventory(index)
+			if not equip_index:
+				item.queue_free() # Remove item from the game
 		else:
 			print("Item not used, remains in inventory: ", item.name)
 	else:

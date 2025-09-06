@@ -43,5 +43,4 @@ func _use() -> bool:
 			print("Applying speed effect: +%d" % potion_amount)
 		PotionType.UNKNOWN:
 			print("Unknown potion type, no effect applied")
-	queue_free() # Remove potion from the game after use
 	return true # Indicate that the potion was used up and should be removed

@@ -19,6 +19,10 @@ config/icon="res://icon.svg"
 
 GlobalSignals="*res://global_signals.gd"
 
+[display]
+
+window/stretch/mode="canvas_items"
+
 [input]
 
 move_right={

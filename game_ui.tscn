@@ -51,17 +51,25 @@ offset_right = 1128.0
 offset_bottom = 636.0
 text = "Floor"
 
+[node name="EquipButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 606.0
+offset_right = 96.0
+offset_bottom = 637.0
+text = "Equip"
+
 [node name="InventoryPanel" type="PanelContainer" parent="."]
 layout_mode = 0
 offset_left = 24.0
-offset_top = 194.0
-offset_right = 280.0
-offset_bottom = 590.0
+offset_top = 448.0
+offset_right = 168.0
+offset_bottom = 592.0
 
 [node name="InventoryList" type="ItemList" parent="InventoryPanel"]
 layout_mode = 2
 wraparound_items = false
-max_columns = 4
+max_columns = 2
 same_column_width = true
 fixed_column_width = 64
 
@@ -85,15 +93,15 @@ text = "Drop"
 
 [node name="FloorPanel" type="PanelContainer" parent="."]
 layout_mode = 0
-offset_left = 872.0
-offset_top = 194.0
+offset_left = 984.0
+offset_top = 448.0
 offset_right = 1128.0
-offset_bottom = 590.0
+offset_bottom = 592.0
 
 [node name="FloorList" type="ItemList" parent="FloorPanel"]
 layout_mode = 2
 wraparound_items = false
-max_columns = 4
+max_columns = 2
 same_column_width = true
 fixed_column_width = 64
 
@@ -135,9 +143,105 @@ texture = ExtResource("2_oaw30")
 [node name="GoldLabel" type="Label" parent="StatusPanel/HBoxContainer"]
 layout_mode = 2
 
+[node name="EquipPanel" type="PanelContainer" parent="."]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 174.0
+offset_right = 168.0
+offset_bottom = 430.0
+
+[node name="Panel" type="Panel" parent="EquipPanel"]
+layout_mode = 2
+
+[node name="HeadButton" type="Button" parent="EquipPanel/Panel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -32.0
+offset_right = 32.0
+offset_bottom = 64.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+button_mask = 3
+
+[node name="TextureRect" type="TextureRect" parent="EquipPanel/Panel/HeadButton"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+
+[node name="RightArmButton" type="Button" parent="EquipPanel/Panel"]
+layout_mode = 1
+offset_top = 64.0
+offset_right = 64.0
+offset_bottom = 128.0
+button_mask = 3
+
+[node name="TextureRect" type="TextureRect" parent="EquipPanel/Panel/RightArmButton"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="LeftArmButton" type="Button" parent="EquipPanel/Panel"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -64.0
+offset_top = 64.0
+offset_bottom = 128.0
+grow_horizontal = 0
+button_mask = 3
+
+[node name="TextureRect" type="TextureRect" parent="EquipPanel/Panel/LeftArmButton"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="LegsButton" type="Button" parent="EquipPanel/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_right = 32.0
+offset_bottom = 64.0
+grow_horizontal = 2
+grow_vertical = 2
+button_mask = 3
+
+[node name="TextureRect" type="TextureRect" parent="EquipPanel/Panel/LegsButton"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="FeetButton" type="Button" parent="EquipPanel/Panel"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -32.0
+offset_top = -64.0
+offset_right = 32.0
+grow_horizontal = 2
+grow_vertical = 0
+button_mask = 3
+
+[node name="TextureRect" type="TextureRect" parent="EquipPanel/Panel/FeetButton"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
 [connection signal="pressed" from="PickUpButton" to="." method="_on_pick_up_button_pressed"]
 [connection signal="pressed" from="InventoryButton" to="." method="_on_inventory_button_pressed"]
 [connection signal="pressed" from="FloorButton" to="." method="_on_floor_button_pressed"]
+[connection signal="pressed" from="EquipButton" to="." method="_on_equip_button_pressed"]
 [connection signal="empty_clicked" from="InventoryPanel/InventoryList" to="." method="_on_inventory_list_empty_clicked"]
 [connection signal="item_clicked" from="InventoryPanel/InventoryList" to="." method="_on_inventory_list_item_clicked"]
 [connection signal="pressed" from="ItemUsePanel/VBoxContainer/UseButton" to="." method="_on_use_button_pressed"]
@@ -145,3 +249,8 @@ layout_mode = 2
 [connection signal="empty_clicked" from="FloorPanel/FloorList" to="." method="_on_floor_list_empty_clicked"]
 [connection signal="item_clicked" from="FloorPanel/FloorList" to="." method="_on_floor_list_item_clicked"]
 [connection signal="pressed" from="FloorUsePanel/VBoxContainer/PickUpButton" to="." method="_on_floor_pick_up_button_pressed"]
+[connection signal="pressed" from="EquipPanel/Panel/HeadButton" to="." method="_on_head_button_pressed"]
+[connection signal="pressed" from="EquipPanel/Panel/RightArmButton" to="." method="_on_right_arm_button_pressed"]
+[connection signal="pressed" from="EquipPanel/Panel/LeftArmButton" to="." method="_on_left_arm_button_pressed"]
+[connection signal="pressed" from="EquipPanel/Panel/LegsButton" to="." method="_on_legs_button_pressed"]
+[connection signal="pressed" from="EquipPanel/Panel/FeetButton" to="." method="_on_feet_button_pressed"]
