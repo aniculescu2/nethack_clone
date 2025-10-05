@@ -126,21 +126,17 @@ func _attack(target: Actor2D) -> int:
 	var damage = _deal_damage()
 	print("Attacking ", target.name, " for ", damage, " damage.")
 	# Calculate damage dealt after armor reduction
-	var damages = target._get_attack(damage, true)
-	_get_attack(damages.y, false) # Take damage from counterattack if any
-	return damages.x
+	var effective_damage = target._get_attack(damage)
+	return effective_damage
 
-func _get_attack(damage_dealt: int, counterattack: bool) -> Vector2i:
+func _get_attack(damage_dealt: int) -> int:
 	# Reduce damage by armor, ensuring at least 1 damage is taken
 	var effective_damage = max(damage_dealt - armor, 0)
 	print(name, " takes ", effective_damage, " damage after armor reduction.")
 	health -= effective_damage
 	print(name, " health is now ", health, "/", max_health)
 	# Counter attack
-	var counter_damage = 0
-	if counterattack and health > 0:
-		counter_damage = _deal_damage()
-	return Vector2i(effective_damage, counter_damage)
+	return effective_damage
 
 func _die() -> void:
 	print(name, " has died.")
