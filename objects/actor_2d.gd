@@ -76,7 +76,10 @@ func _on_use_item(index: int) -> void:
 				print("Unequipping previous item from: ", equip_index)
 				_add_to_inventory(equipment[equip_index])
 			equipment[equip_index] = item
+			_update_armor()
 
+		# If the item was used (like a potion), remove it from inventory
+		# If it was equipped, it stays in inventory
 		if used:
 			print("Item used and removed from inventory: ", item.name)
 			_remove_from_inventory(index)
@@ -95,6 +98,14 @@ func _on_unequipped_item(equip_index: String) -> void:
 	else:
 		print("No item equipped in: ", equip_index)
 
+func _update_armor() -> void:
+	# Recalculate armor based on equipped items
+	armor = 0
+	for part in equipment.values():
+		if part and part.has("armor"):
+			armor += part.armor
+	print("Updated armor: ", armor)
+
 func _deal_damage() -> int:
 	# Calculate damage based on strength and equipped weapon
 	var base_damage = 1 + (strength / 2) # Base damage influenced by strength
@@ -109,9 +120,8 @@ func _deal_damage() -> int:
 func _attack(target: Actor2D) -> int:
 	var damage = _deal_damage()
 	print("Attacking ", target.name, " for ", damage, " damage.")
-	var armor = target.armor
 	# Calculate damage dealt after armor reduction
-	var damage_dealt = max(damage - armor, 0)
+	var damage_dealt = max(damage - target.armor, 0)
 	target.health -= damage_dealt
 	if target.health <= 0:
 		print(target.name, " has been defeated!")
