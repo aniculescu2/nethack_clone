@@ -40,7 +40,7 @@ func move_element(element, target):
 		print("Target position occupied by another actor. Move aborted.")
 		if element.alignment == Actor2D.ACTOR_ALIGNMENT.FRIENDLY and actor_dict[target].alignment == Actor2D.ACTOR_ALIGNMENT.ENEMY:
 			print("Initiating attack on enemy at target position.")
-			element.attack(actor_dict[target])
+			element._attack(actor_dict[target])
 		return
 
 	var start = local_to_map(element.position)

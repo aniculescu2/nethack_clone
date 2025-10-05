@@ -196,6 +196,7 @@ amount = 10
 [node name="Sword" type="Node2D" parent="Map/ObjectTileMap"]
 position = Vector2(96, 400)
 script = ExtResource("19_82xsv")
+damage = 3
 element_type = 6
 element_id = 4
 metadata/_custom_type_script = "uid://d2ho7ueh135bn"
@@ -203,6 +204,7 @@ metadata/_custom_type_script = "uid://d2ho7ueh135bn"
 [node name="Sword2" type="Node2D" parent="Map/ObjectTileMap"]
 position = Vector2(96, 400)
 script = ExtResource("19_82xsv")
+damage = 3
 element_type = 6
 element_id = 4
 metadata/_custom_type_script = "uid://d2ho7ueh135bn"

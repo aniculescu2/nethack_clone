@@ -6,3 +6,5 @@ func _ready() -> void:
 	element_id = 0
 	alternative_id = 1
 	alignment = ACTOR_ALIGNMENT.ENEMY
+	# Set health
+	health = max_health # Initial health

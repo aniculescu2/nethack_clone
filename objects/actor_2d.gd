@@ -13,7 +13,12 @@ var health: int:
 	set = _health_setter
 
 func _health_setter(value):
-		health = clamp(value, 0, max_health)
+	if health == 0:
+		print(name, " is already dead. Health cannot be changed.")
+		print("WARNING: Make sure health was initiallly set in _ready()")
+	health = clamp(value, 0, max_health)
+	if health <= 0:
+		_die()
 
 # Player strength attribute, could influence damage, carrying capacity, etc.
 var strength: int:
@@ -112,7 +117,7 @@ func _deal_damage() -> int:
 	var weapon_damage = 0
 	if equipment["right_arm"]:
 		# Assuming the weapon has a damage property
-		weapon_damage = equipment["right_arm"].get("damage", 0)
+		weapon_damage = equipment["right_arm"].damage
 	var total_damage = base_damage + weapon_damage
 	print("Dealing damage: ", total_damage)
 	return total_damage
@@ -121,9 +126,23 @@ func _attack(target: Actor2D) -> int:
 	var damage = _deal_damage()
 	print("Attacking ", target.name, " for ", damage, " damage.")
 	# Calculate damage dealt after armor reduction
-	var damage_dealt = max(damage - target.armor, 0)
-	target.health -= damage_dealt
-	if target.health <= 0:
-		print(target.name, " has been defeated!")
-		# Handle target defeat (e.g., remove from game, drop loot, etc.)
-	return damage_dealt
+	var damages = target._get_attack(damage, true)
+	_get_attack(damages.y, false) # Take damage from counterattack if any
+	return damages.x
+
+func _get_attack(damage_dealt: int, counterattack: bool) -> Vector2i:
+	# Reduce damage by armor, ensuring at least 1 damage is taken
+	var effective_damage = max(damage_dealt - armor, 0)
+	print(name, " takes ", effective_damage, " damage after armor reduction.")
+	health -= effective_damage
+	print(name, " health is now ", health, "/", max_health)
+	# Counter attack
+	var counter_damage = 0
+	if counterattack and health > 0:
+		counter_damage = _deal_damage()
+	return Vector2i(effective_damage, counter_damage)
+
+func _die() -> void:
+	print(name, " has died.")
+	# Additional logic for when the actor dies (e.g., play animation, drop loot)
+	queue_free() # Remove the actor from the game
