@@ -20,6 +20,7 @@ enum ItemType {
 
 @export var element_type: CellType
 @export var element_id: int = -1 # Unique identifier for the element
+@export var alternative_id: int = 0 # Alternative identifier for the element, if needed
 @export var texture_path: String
 
 func _use() -> bool:

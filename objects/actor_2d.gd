@@ -1,33 +1,48 @@
-extends Actor2D
+class_name Actor2D
+extends Element2D
 
-signal health_changed(health: int)
+enum ACTOR_ALIGNMENT {
+	FRIENDLY,
+	NEUTRAL,
+	ENEMY
+}
 
-@onready var game_ui = $Camera2D/CanvasLayer/GameUI
+@export var max_health: int = 10
 
+var health: int:
+	set = _health_setter
 
 func _health_setter(value):
 		health = clamp(value, 0, max_health)
-		game_ui._on_player_health_changed(health)
 
-func __gold_setter(value):
+# Player strength attribute, could influence damage, carrying capacity, etc.
+var strength: int:
+	set = _strength_setter
+func _strength_setter(value):
+		strength = max(value, 0)
+
+var armor: int = 0 # Damage reduction from armor
+
+var inventory = []
+
+var equipment = {"head": null, "right_arm": null, "left_arm": null, "legs": null, "feet": null}
+
+var gold: int:
+	set = _gold_setter
+func _gold_setter(value):
 		gold = max(value, 0) # Ensure gold cannot be negative
-		game_ui._on_gold_changed(gold)
+
+var alignment: ACTOR_ALIGNMENT = ACTOR_ALIGNMENT.NEUTRAL
 
 func _ready() -> void:
 	element_type = Element2D.CellType.ACTOR
-	element_id = 0
-	alternative_id = 0
-	alignment = ACTOR_ALIGNMENT.FRIENDLY
+	element_id = 0 # Unique identifier for an actor
 
 	# Set health
 	health = max_health # Initial health
-	game_ui.get_node("StatusPanel/HBoxContainer/HealthBar").max_value = max_health
-	game_ui.update_inventory(inventory)
-	game_ui.use_item.connect(_on_use_item)
-	game_ui.unequipped_item.connect(_on_unequipped_item)
 
-	# Connect to global signal for health increase (e.g., from potions)
-	GlobalSignals.increase_health.connect(_increase_health)
+func _increase_health(amount: int) -> void:
+	health += amount
 
 func _add_to_inventory(item):
 	if item is Gold:
@@ -35,11 +50,9 @@ func _add_to_inventory(item):
 		print("Gold added: ", item.amount, " Total gold: ", gold)
 	else:
 		inventory.append(item)
-		game_ui.update_inventory(inventory)
 
 func _remove_from_inventory(index: int) -> void:
 	inventory.remove_at(index)
-	game_ui.update_inventory(inventory)
 
 func _on_use_item(index: int) -> void:
 	var item = inventory.get(index)
@@ -63,7 +76,6 @@ func _on_use_item(index: int) -> void:
 				print("Unequipping previous item from: ", equip_index)
 				_add_to_inventory(equipment[equip_index])
 			equipment[equip_index] = item
-			game_ui.update_equipment(equipment)
 
 		if used:
 			print("Item used and removed from inventory: ", item.name)
@@ -80,6 +92,28 @@ func _on_unequipped_item(equip_index: String) -> void:
 		print("Unequipping item from: ", equip_index)
 		_add_to_inventory(equipment[equip_index])
 		equipment[equip_index] = null
-		game_ui.update_equipment(equipment)
 	else:
 		print("No item equipped in: ", equip_index)
+
+func _deal_damage() -> int:
+	# Calculate damage based on strength and equipped weapon
+	var base_damage = 1 + (strength / 2) # Base damage influenced by strength
+	var weapon_damage = 0
+	if equipment["right_arm"]:
+		# Assuming the weapon has a damage property
+		weapon_damage = equipment["right_arm"].get("damage", 0)
+	var total_damage = base_damage + weapon_damage
+	print("Dealing damage: ", total_damage)
+	return total_damage
+
+func _attack(target: Actor2D) -> int:
+	var damage = _deal_damage()
+	print("Attacking ", target.name, " for ", damage, " damage.")
+	var armor = target.armor
+	# Calculate damage dealt after armor reduction
+	var damage_dealt = max(damage - armor, 0)
+	target.health -= damage_dealt
+	if target.health <= 0:
+		print(target.name, " has been defeated!")
+		# Handle target defeat (e.g., remove from game, drop loot, etc.)
+	return damage_dealt

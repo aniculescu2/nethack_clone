@@ -1,16 +1,16 @@
-[gd_scene load_steps=32 format=4 uid="uid://baowome0sfn0x"]
+[gd_scene load_steps=33 format=4 uid="uid://baowome0sfn0x"]
 
 [ext_resource type="Texture2D" uid="uid://sbgbkcol3rcb" path="res://textures/stone_floor_small.png" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://cuhg8cfw6e0r5" path="res://player.tscn" id="2_1bvp3"]
 [ext_resource type="Texture2D" uid="uid://csk7mvc0q55t4" path="res://textures/open_door.png" id="2_4c57u"]
 [ext_resource type="Script" uid="uid://bkpaay2shs2m4" path="res://map_control.gd" id="2_ycdy4"]
-[ext_resource type="Texture2D" uid="uid://bhu66ehor1xy1" path="res://textures/knight_small.png" id="3_1bvp3"]
 [ext_resource type="Texture2D" uid="uid://c52n5ll0u0hws" path="res://textures/wall_small.png" id="3_lquwl"]
 [ext_resource type="Script" uid="uid://dkwlyoood5owx" path="res://map.gd" id="4_lquwl"]
 [ext_resource type="Script" uid="uid://dfy7f3ftkxnfy" path="res://map_tile_map.gd" id="6_5vw27"]
 [ext_resource type="Texture2D" uid="uid://c6ohorxxflwlx" path="res://textures/locked_door.png" id="6_efxa6"]
 [ext_resource type="Texture2D" uid="uid://daw0bvxnif8o8" path="res://textures/closed_door.jpg" id="6_kek77"]
 [ext_resource type="Script" uid="uid://di71p8xq5e0xq" path="res://object_tile_map.gd" id="7_5vw27"]
+[ext_resource type="Texture2D" uid="uid://c53wf0ygvlyru" path="res://textures/actors_atlas.png" id="9_cegan"]
 [ext_resource type="Texture2D" uid="uid://bo104hvyoslff" path="res://textures/potion.png" id="9_dg77c"]
 [ext_resource type="Texture2D" uid="uid://dl1mfc6odrqbi" path="res://textures/key_small.png" id="11_vivmo"]
 [ext_resource type="Script" uid="uid://cr3hc2udkabfi" path="res://objects/key.gd" id="12_w48qg"]
@@ -19,6 +19,7 @@
 [ext_resource type="Texture2D" uid="uid://8wfklpnuxr" path="res://textures/sword.png" id="13_cegan"]
 [ext_resource type="Script" uid="uid://b87xpgpimpk60" path="res://objects/gold.gd" id="16_2cqfq"]
 [ext_resource type="Script" uid="uid://d2ho7ueh135bn" path="res://objects/sword.gd" id="19_82xsv"]
+[ext_resource type="Script" uid="uid://cl22o2hog301o" path="res://objects/mob.gd" id="20_82xsv"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_dg77c"]
 texture = ExtResource("2_4c57u")
@@ -107,25 +108,11 @@ sources/3 = SubResource("TileSetAtlasSource_5vw27")
 sources/0 = SubResource("TileSetAtlasSource_dg77c")
 sources/4 = SubResource("TileSetAtlasSource_ycdy4")
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_kek77"]
-texture = ExtResource("3_1bvp3")
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_82xsv"]
+texture = ExtResource("9_cegan")
 texture_region_size = Vector2i(64, 64)
 0:0/0 = 0
 1:0/0 = 0
-2:0/0 = 0
-3:0/0 = 0
-0:1/0 = 0
-1:1/0 = 0
-2:1/0 = 0
-3:1/0 = 0
-0:2/0 = 0
-1:2/0 = 0
-2:2/0 = 0
-3:2/0 = 0
-0:3/0 = 0
-1:3/0 = 0
-2:3/0 = 0
-3:3/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_w48qg"]
 texture = ExtResource("9_dg77c")
@@ -149,11 +136,11 @@ texture_region_size = Vector2i(64, 64)
 
 [sub_resource type="TileSet" id="TileSet_4c57u"]
 tile_size = Vector2i(64, 64)
-sources/0 = SubResource("TileSetAtlasSource_kek77")
 sources/2 = SubResource("TileSetAtlasSource_2cqfq")
 sources/1 = SubResource("TileSetAtlasSource_w48qg")
 sources/3 = SubResource("TileSetAtlasSource_074og")
 sources/4 = SubResource("TileSetAtlasSource_getpj")
+sources/0 = SubResource("TileSetAtlasSource_82xsv")
 
 [node name="Main" type="Node"]
 
@@ -219,3 +206,8 @@ script = ExtResource("19_82xsv")
 element_type = 6
 element_id = 4
 metadata/_custom_type_script = "uid://d2ho7ueh135bn"
+
+[node name="Mob" type="Node2D" parent="Map/ObjectTileMap"]
+position = Vector2(860, 421)
+script = ExtResource("20_82xsv")
+metadata/_custom_type_script = "uid://cl22o2hog301o"

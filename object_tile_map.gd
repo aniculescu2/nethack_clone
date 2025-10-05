@@ -7,6 +7,11 @@ var tile_id = -1
 # The key is the map position (Vector2i), and the value is a list of objects at that position
 var object_dict = {}
 
+# Dictionary to hold actor references
+# The key is the map position (Vector2i), and the value is the actor at that position
+# Only one actor can be on a tile at a time
+var actor_dict = {}
+
 @onready var player = $Player
 @onready var game_ui = $Player/Camera2D/CanvasLayer/GameUI
 
@@ -18,23 +23,34 @@ func _ready() -> void:
 			# TODO: Use different potion sprites based on potion type
 			# if child is Potion:
 			#     var alternate_tile = child.potion_type
-			# set_cell(local_to_map(child.position), child.element_id, Vector2i.ZERO)
-			if not object_dict.has(local_to_map(child.position)):
-				object_dict[local_to_map(child.position)] = []
 			if child.element_type == Element2D.CellType.ITEM:
+				if not object_dict.has(local_to_map(child.position)):
+					object_dict[local_to_map(child.position)] = []
 				object_dict[local_to_map(child.position)].append(child)
+			elif child.element_type == Element2D.CellType.ACTOR:
+				actor_dict[local_to_map(child.position)] = child
 
 	game_ui.all_objects_picked_up.connect(_on_game_ui_object_picked_up)
 	game_ui.object_picked_up.connect(_on_floor_object_picked_up)
 	game_ui.drop_item.connect(_on_game_ui_drop_item)
 
 func move_element(element, target):
+	# Check if target position is occupied by another actor
+	if actor_dict.has(target) and actor_dict[target] != null:
+		print("Target position occupied by another actor. Move aborted.")
+		if element.alignment == Actor2D.ACTOR_ALIGNMENT.FRIENDLY and actor_dict[target].alignment == Actor2D.ACTOR_ALIGNMENT.ENEMY:
+			print("Initiating attack on enemy at target position.")
+			element.attack(actor_dict[target])
+		return
+
 	var start = local_to_map(element.position)
 	set_cell(start, tile_id, Vector2i.ZERO)
 	var tile_on_spot = get_cell_tile_data(target)
 	tile_id = get_cell_source_id(target)
 	set_cell(target, element.element_id, Vector2i.ZERO)
 	element.position = map_to_local(target)
+
+	# Check if item is on tile
 	if element == player:
 		var is_item: bool = false
 		if tile_on_spot and object_dict.has(target):
@@ -60,7 +76,7 @@ func _on_game_ui_object_picked_up() -> void:
 	print("items: ", object_dict[local_to_map(player.position)])
 	for item in object_dict[local_to_map(player.position)]:
 		print("Picking up item: ", item.name)
-		player.add_to_inventory(item)
+		player._add_to_inventory(item)
 		remove_child(item)
 	object_dict[local_to_map(player.position)] = []
 
@@ -79,7 +95,7 @@ func _on_game_ui_drop_item(index: int) -> void:
 			object_dict[player_position] = []
 		object_dict[player_position].append(item)
 		add_child(item)
-		player.remove_from_inventory(index)
+		player._remove_from_inventory(index)
 		game_ui.get_node("PickUpButton").show()
 
 func _on_floor_object_picked_up(index) -> void:
@@ -87,7 +103,7 @@ func _on_floor_object_picked_up(index) -> void:
 	if index >= 0 and index < object_dict[player_position].size():
 		var item = object_dict[player_position][index]
 		print("Picking up item from floor: ", item.name)
-		player.add_to_inventory(item)
+		player._add_to_inventory(item)
 		remove_child(item)
 		object_dict[player_position].remove_at(index)
 		# Set tile_id to next item if available
@@ -104,6 +120,9 @@ func update_object_light(in_sight):
 	for loc in in_sight:
 		if object_dict.has(loc) and not object_dict[loc].is_empty():
 				if loc != local_to_map(player.position):
-					set_cell(loc, object_dict[loc][0].element_id, Vector2i.ZERO)
+					set_cell(loc, object_dict[loc][0].element_id, Vector2i(object_dict[loc][0].alternative_id, 0))
+		if actor_dict.has(loc) and actor_dict[loc]:
+			if loc != local_to_map(player.position) and actor_dict[loc].alternative_id != 0:
+				set_cell(loc, actor_dict[loc].element_id, Vector2i(actor_dict[loc].alternative_id, 0))
 
 	set_cell(local_to_map(player.position), player.element_id, Vector2i.ZERO)

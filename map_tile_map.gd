@@ -196,7 +196,7 @@ func unlock_door(node: Element2D, door_type: int) -> bool:
 		for item in node.inventory:
 			if item is Key and item.door_key == door_type:
 				print("Door unlocked with key: ", item.name)
-				node.remove_from_inventory(node.inventory.find(item)) # Remove the key from inventory
+				node._remove_from_inventory(node.inventory.find(item)) # Remove the key from inventory
 				return true
 	print("No key found to unlock the door.")
 	return false

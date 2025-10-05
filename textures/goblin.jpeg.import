@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dkmps2kw47msg"
-path="res://.godot/imported/many-gold-coins-pixel-art-260nw-2093552257.webp-4430387b41d7fb7005e97fd85c81f871.ctex"
+uid="uid://5sccvq5nblaj"
+path="res://.godot/imported/goblin.jpeg-0caba947efc3d38abdfd13e09200d5cc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://textures/many-gold-coins-pixel-art-260nw-2093552257.webp"
-dest_files=["res://.godot/imported/many-gold-coins-pixel-art-260nw-2093552257.webp-4430387b41d7fb7005e97fd85c81f871.ctex"]
+source_file="res://textures/goblin.jpeg"
+dest_files=["res://.godot/imported/goblin.jpeg-0caba947efc3d38abdfd13e09200d5cc.ctex"]
 
 [params]
 
