@@ -33,6 +33,8 @@ func _ready() -> void:
 	game_ui.all_objects_picked_up.connect(_on_game_ui_object_picked_up)
 	game_ui.object_picked_up.connect(_on_floor_object_picked_up)
 	game_ui.drop_item.connect(_on_game_ui_drop_item)
+	GlobalSignals.actor_died.connect(_on_actor_died)
+	GlobalSignals.item_dropped.connect(_on_mob_drop)
 
 func move_element(element, target):
 	# Check if target position is occupied by another actor
@@ -126,3 +128,22 @@ func update_object_light(in_sight):
 				set_cell(loc, actor_dict[loc].element_id, Vector2i(actor_dict[loc].alternative_id, 0))
 
 	set_cell(local_to_map(player.position), player.element_id, Vector2i.ZERO)
+
+func _on_actor_died(actor: Actor2D) -> void:
+	var actor_pos = local_to_map(actor.position)
+	if actor_dict.has(actor_pos) and actor_dict[actor_pos] == actor:
+		actor_dict[actor_pos] = null
+		remove_child(actor)
+		set_cell(actor_pos, -1, Vector2i.ZERO)
+		print("Actor removed from tile map at position: ", actor_pos)
+
+# Utility function to handle adding items to map
+func _on_mob_drop(item: Element2D) -> void:
+	var item_pos = local_to_map(item.position)
+	if not object_dict.has(item_pos):
+		object_dict[item_pos] = []
+	object_dict[item_pos].append(item)
+	add_child(item)
+	print("Mob dropped item: ", item.name, " at position: ", item.position)
+	set_cell(item.position, item.element_id, Vector2i.ZERO)
+	# game_ui.get_node("PickUpButton").show()

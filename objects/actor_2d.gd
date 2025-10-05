@@ -141,4 +141,5 @@ func _get_attack(damage_dealt: int) -> int:
 func _die() -> void:
 	print(name, " has died.")
 	# Additional logic for when the actor dies (e.g., play animation, drop loot)
+	GlobalSignals.actor_died.emit(self)
 	queue_free() # Remove the actor from the game

@@ -9,7 +9,7 @@ func _health_setter(value):
 		health = clamp(value, 0, max_health)
 		game_ui._on_player_health_changed(health)
 
-func __gold_setter(value):
+func _gold_setter(value):
 		gold = max(value, 0) # Ensure gold cannot be negative
 		game_ui._on_gold_changed(gold)
 
