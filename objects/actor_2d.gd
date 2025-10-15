@@ -143,3 +143,7 @@ func _die() -> void:
 	# Additional logic for when the actor dies (e.g., play animation, drop loot)
 	GlobalSignals.actor_died.emit(self)
 	queue_free() # Remove the actor from the game
+
+func _move(direction: Vector2i) -> void:
+	# Emit signal to request movement
+	GlobalSignals.move_actor.emit(self, direction)

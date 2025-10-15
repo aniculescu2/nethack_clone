@@ -13,3 +13,9 @@ signal actor_died(actor: Actor2D)
 
 # Signal for item dropped (e.g., when a mob dies)
 signal item_dropped(item: Element2D)
+
+# Signal for when element requests move
+signal move_actor(actor: Actor2D, direction: Vector2i)
+
+# Signal for end of player turn: movement, attack, interaction, inventory change
+signal end_player_turn()

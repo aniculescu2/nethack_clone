@@ -54,6 +54,7 @@ func _ready() -> void:
 					_astar.set_point_solid(pos)
 
 	GlobalSignals.update_light.connect(update_light)
+	GlobalSignals.move_actor.connect(move)
 
 func handle_input(event):
 	# Mouse in viewport coordinates.
@@ -173,16 +174,15 @@ func move(node: Element2D, direction: Vector2i) -> bool:
 			var is_unlocked = unlock_door(node, door_type)
 			if is_unlocked:
 				open_door(target)
-				update_light(start)
+				if node == _player_node:
+					GlobalSignals.end_player_turn.emit() # Corner case: player tries to open a locked door but doesn't move
 			return is_unlocked
 		Element2D.CellType.CLOSED_DOOR:
 			open_door(target)
 			move_signal.emit(node, target)
-			update_light(target)
 			return true
 		_:
 			move_signal.emit(node, target)
-			update_light(target)
 			return true
 
 ## Opens a door at the specified target position and updates navigation

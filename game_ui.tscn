@@ -267,7 +267,7 @@ text = "Unequip"
 [connection signal="empty_clicked" from="FloorPanel/FloorList" to="." method="_on_floor_list_empty_clicked"]
 [connection signal="item_clicked" from="FloorPanel/FloorList" to="." method="_on_floor_list_item_clicked"]
 [connection signal="pressed" from="FloorUsePanel/VBoxContainer/PickUpButton" to="." method="_on_floor_pick_up_button_pressed"]
-[connection signal="gui_input" from="EquipPanel/Panel" to="." method="_on_equp_panel_panel_gui_input"]
+[connection signal="gui_input" from="EquipPanel/Panel" to="." method="_on_equip_panel_panel_gui_input"]
 [connection signal="pressed" from="EquipPanel/Panel/HeadButton" to="." method="_on_head_button_pressed"]
 [connection signal="pressed" from="EquipPanel/Panel/RightArmButton" to="." method="_on_right_arm_button_pressed"]
 [connection signal="pressed" from="EquipPanel/Panel/LeftArmButton" to="." method="_on_left_arm_button_pressed"]

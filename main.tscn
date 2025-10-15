@@ -176,7 +176,7 @@ script = ExtResource("12_ycdy4")
 metadata/_custom_type_script = "uid://bimv1krwcmi4p"
 
 [node name="Player" parent="Map/ObjectTileMap" instance=ExtResource("2_1bvp3")]
-position = Vector2(96, 96)
+position = Vector2(96, 160)
 
 [node name="Potion2" type="Node2D" parent="Map/ObjectTileMap"]
 position = Vector2(96, 160)

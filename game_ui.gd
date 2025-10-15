@@ -38,6 +38,7 @@ func _on_pick_up_button_pressed() -> void:
 	all_objects_picked_up.emit()
 	$FloorPanel/FloorList.clear()
 	print("Object picked up signal emitted")
+	GlobalSignals.end_player_turn.emit()
 
 func _on_floor_button_pressed() -> void:
 	if $FloorPanel.visible:
@@ -78,8 +79,6 @@ func _on_player_health_changed(health: int) -> void:
 	$StatusPanel/HBoxContainer/HealthBar.set_value_no_signal(health)
 	if health <= 0:
 		$StatusPanel/HBoxContainer/HealthBar.set_value_no_signal(0)
-		print("Player has died")
-		# Handle player death logic here, e.g., show game over screen
 
 func _on_inventory_list_empty_clicked(at_position: Vector2, mouse_button_index: int) -> void:
 	if mouse_button_index == MOUSE_BUTTON_LEFT:
@@ -92,6 +91,7 @@ func _on_use_button_pressed() -> void:
 		# Implement item use logic here
 		# $InventoryPanel/InventoryList.remove_item(selected_index)
 		use_item.emit(selected_index)
+		GlobalSignals.end_player_turn.emit()
 	else:
 		print("No item selected to use")
 	selected_index = -1
@@ -104,6 +104,7 @@ func _on_drop_button_pressed() -> void:
 		$FloorPanel/FloorList.add_item($InventoryPanel/InventoryList.get_item_text(selected_index), $InventoryPanel/InventoryList.get_item_icon(selected_index))
 		$InventoryPanel/InventoryList.remove_item(selected_index)
 		drop_item.emit(selected_index)
+		GlobalSignals.end_player_turn.emit()
 	else:
 		print("No item selected to drop")
 	selected_index = -1
@@ -135,11 +136,12 @@ func _on_floor_pick_up_button_pressed() -> void:
 		# Implement item pick up logic here
 		$FloorPanel/FloorList.remove_item(selected_index)
 		object_picked_up.emit(selected_index)
+		GlobalSignals.end_player_turn.emit()
+
 	else:
 		print("No item selected to pick up")
 	selected_index = -1
 	$FloorUsePanel.hide()
-
 
 func _on_floor_list_empty_clicked(at_position: Vector2, mouse_button_index: int) -> void:
 	if mouse_button_index == MOUSE_BUTTON_LEFT:
@@ -149,7 +151,6 @@ func _on_floor_list_empty_clicked(at_position: Vector2, mouse_button_index: int)
 func _on_gold_changed(new_gold: int) -> void:
 	$StatusPanel/HBoxContainer/GoldLabel.text = "%d" % new_gold
 	print("Gold updated: ", new_gold)
-
 
 func _on_equip_button_pressed() -> void:
 	if $EquipPanel.visible:
@@ -211,7 +212,7 @@ func _on_unequip_button_pressed() -> void:
 		unequipped_item.emit(equip_index)
 		equip_index = ""
 		$EquipUsePanel.hide()
+		GlobalSignals.end_player_turn.emit()
 
-
-func _on_equp_panel_panel_gui_input(event: InputEvent) -> void:
+func _on_equip_panel_panel_gui_input(event: InputEvent) -> void:
 	$EquipUsePanel.hide()

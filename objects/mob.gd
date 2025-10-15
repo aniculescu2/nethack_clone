@@ -2,7 +2,6 @@ class_name Mob
 extends Actor2D
 
 @export var gold_drop: int = 5
-
 func _ready() -> void:
 	element_type = Element2D.CellType.ACTOR
 	element_id = 0
@@ -22,3 +21,23 @@ func _die() -> void:
 		print(name, " dropped ", gold_drop, " gold.")
 	GlobalSignals.actor_died.emit(self)
 	queue_free() # Remove the mob from the game
+
+func take_turn() -> void:
+	print(name, " is taking its turn.")
+	print("mob alignment: ", alignment)
+	var init_pos = position
+	var directions = [Vector2(1, 0), Vector2(-1, 0), Vector2(0, 1), Vector2(0, -1)]
+	directions.shuffle()
+	var player_distance = %Player.position - position
+	match player_distance:
+		Vector2(64, 0), Vector2(-64, 0), Vector2(0, 64), Vector2(0, -64):
+			print(name, " is adjacent to player and will attack.")
+			_move(player_distance.sign())
+		_:
+			while position == init_pos:
+				if directions.is_empty():
+					print(name, " has no valid moves and will skip its turn.")
+					break
+				# Try moving in a random direction
+				var dir = directions.pop_back()
+				_move(dir)
