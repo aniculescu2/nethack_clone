@@ -37,7 +37,6 @@ func _on_pick_up_button_pressed() -> void:
 	$PickUpButton.hide()
 	all_objects_picked_up.emit()
 	$FloorPanel/FloorList.clear()
-	print("Object picked up signal emitted")
 	GlobalSignals.end_player_turn.emit()
 
 func _on_floor_button_pressed() -> void:
@@ -55,8 +54,6 @@ func update_inventory(inventory: Array) -> void:
 		$InventoryPanel/InventoryList.add_item(item.name, item_texture)
 
 func update_equipment(equipment: Dictionary) -> void:
-	print("equipment")
-	print(equipment)
 	var equip_textures = {}
 	for key in equipment.keys():
 		if equipment[key] and equipment[key].texture_path:
@@ -64,16 +61,18 @@ func update_equipment(equipment: Dictionary) -> void:
 		else:
 			equip_textures[key] = null
 	var equip_panel = $EquipPanel/Panel
-	equip_panel.get_node("HeadButton").get_node("TextureRect").texture = equip_textures.get("head", null)
-	equip_panel.get_node("HeadButton").tooltip_text = equipment.get("head", null).name if equipment.get("head", null) else "Empty"
-	equip_panel.get_node("RightArmButton").get_node("TextureRect").texture = equip_textures.get("right_arm", null)
-	equip_panel.get_node("RightArmButton").tooltip_text = equipment.get("right_arm", null).name if equipment.get("right_arm", null) else "Empty"
-	equip_panel.get_node("LeftArmButton").get_node("TextureRect").texture = equip_textures.get("left_arm", null)
-	equip_panel.get_node("LeftArmButton").tooltip_text = equipment.get("left_arm", null).name if equipment.get("left_arm", null) else "Empty"
-	equip_panel.get_node("LegsButton").get_node("TextureRect").texture = equip_textures.get("legs", null)
-	equip_panel.get_node("LegsButton").tooltip_text = equipment.get("legs", null).name if equipment.get("legs", null) else "Empty"
-	equip_panel.get_node("FeetButton").get_node("TextureRect").texture = equip_textures.get("feet", null)
-	equip_panel.get_node("FeetButton").tooltip_text = equipment.get("feet", null).name if equipment.get("feet", null) else "Empty"
+	for part in equipment.keys():
+		var button_name: String = part
+		button_name[0] = button_name[0].to_upper()
+		# Turn part name into button name, e.g., "right_arm" -> "RightArmButton", only works for one underscore
+		for i in range(button_name.length()):
+			if button_name[i] == "_":
+				button_name = button_name.substr(0, i) + button_name[i + 1].to_upper() + button_name.substr(i + 2)
+				break
+		button_name += "Button"
+		equip_panel.get_node(button_name).get_node("TextureRect").texture = equip_textures.get(part, null)
+		equip_panel.get_node(button_name).tooltip_text = equipment.get(part, null).name if equipment.get(part, null) else "Empty"
+
 
 func _on_player_health_changed(health: int) -> void:
 	$StatusPanel/HBoxContainer/HealthBar.set_value_no_signal(health)
@@ -99,7 +98,6 @@ func _on_use_button_pressed() -> void:
 
 func _on_drop_button_pressed() -> void:
 	if selected_index != -1:
-		print("Dropping item at index: ", selected_index)
 		# Implement item drop logic here
 		$FloorPanel/FloorList.add_item($InventoryPanel/InventoryList.get_item_text(selected_index), $InventoryPanel/InventoryList.get_item_icon(selected_index))
 		$InventoryPanel/InventoryList.remove_item(selected_index)
@@ -150,7 +148,6 @@ func _on_floor_list_empty_clicked(at_position: Vector2, mouse_button_index: int)
 
 func _on_gold_changed(new_gold: int) -> void:
 	$StatusPanel/HBoxContainer/GoldLabel.text = "%d" % new_gold
-	print("Gold updated: ", new_gold)
 
 func _on_equip_button_pressed() -> void:
 	if $EquipPanel.visible:
@@ -208,7 +205,6 @@ func _on_unequip_button_pressed() -> void:
 	if equip_index == "":
 		print("No item equipped")
 	else:
-		print("Unequipping item from ", equip_index)
 		unequipped_item.emit(equip_index)
 		equip_index = ""
 		$EquipUsePanel.hide()

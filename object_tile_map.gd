@@ -45,9 +45,11 @@ func actor_loop() -> void:
 				if actor != player_node:
 					actor.take_turn()
 				else:
-					# Player turn handled by input events
+					# Update light after mob turns
 					GlobalSignals.update_light.emit(local_to_map(player_node.position))
+					# Player turn handled by input events
 					await GlobalSignals.end_player_turn
+					# Update light after player turn
 					GlobalSignals.update_light.emit(local_to_map(player_node.position))
 
 func move_element(element, target):
@@ -62,7 +64,6 @@ func move_element(element, target):
 				GlobalSignals.end_player_turn.emit()
 		elif element.alignment == actor_dict[target].alignment:
 			print("Both actors are friendly. Swap positions.")
-			# 
 		return
 
 	var start = local_to_map(element.position)

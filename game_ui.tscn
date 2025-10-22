@@ -147,7 +147,7 @@ layout_mode = 2
 layout_mode = 0
 offset_left = 24.0
 offset_top = 174.0
-offset_right = 168.0
+offset_right = 216.0
 offset_bottom = 430.0
 
 [node name="Panel" type="Panel" parent="EquipPanel"]
@@ -167,6 +167,26 @@ size_flags_vertical = 0
 button_mask = 3
 
 [node name="TextureRect" type="TextureRect" parent="EquipPanel/Panel/HeadButton"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+
+[node name="BodyButton" type="Button" parent="EquipPanel/Panel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -32.0
+offset_top = 64.0
+offset_right = 32.0
+offset_bottom = 128.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+button_mask = 3
+
+[node name="TextureRect" type="TextureRect" parent="EquipPanel/Panel/BodyButton"]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -269,6 +289,7 @@ text = "Unequip"
 [connection signal="pressed" from="FloorUsePanel/VBoxContainer/PickUpButton" to="." method="_on_floor_pick_up_button_pressed"]
 [connection signal="gui_input" from="EquipPanel/Panel" to="." method="_on_equip_panel_panel_gui_input"]
 [connection signal="pressed" from="EquipPanel/Panel/HeadButton" to="." method="_on_head_button_pressed"]
+[connection signal="pressed" from="EquipPanel/Panel/BodyButton" to="." method="_on_head_button_pressed"]
 [connection signal="pressed" from="EquipPanel/Panel/RightArmButton" to="." method="_on_right_arm_button_pressed"]
 [connection signal="pressed" from="EquipPanel/Panel/LeftArmButton" to="." method="_on_left_arm_button_pressed"]
 [connection signal="pressed" from="EquipPanel/Panel/LegsButton" to="." method="_on_legs_button_pressed"]

@@ -30,7 +30,12 @@ var armor: int = 0 # Damage reduction from armor
 
 var inventory = []
 
-var equipment = {"head": null, "right_arm": null, "left_arm": null, "legs": null, "feet": null}
+var equipment = {"head": null,
+				"body": null,
+				"right_arm": null,
+				"left_arm": null,
+				"legs": null,
+				"feet": null}
 
 var gold: int:
 	set = _gold_setter
@@ -59,34 +64,34 @@ func _add_to_inventory(item):
 func _remove_from_inventory(index: int) -> void:
 	inventory.remove_at(index)
 
+func _update_equipment() -> void:
+	# Placeholder for any logic needed when equipment changes
+	pass
+
 func _on_use_item(index: int) -> void:
 	var item = inventory.get(index)
 	if item:
-		print("Using item: ", item.name)
 		# Implement item use logic here, e.g., apply effects
 		var used: bool = item._use()
 		var equip_index = ""
-		print("element_id")
-		print(item.element_id)
 		match item.element_id:
-			Element2D.ItemType.SWORD:
+			Element2D.ItemType.WEAPON:
 				equip_index = "right_arm"
+			Element2D.ItemType.ARMOR:
+				equip_index = item.slot
 
-		print("equip_index")
-		print(equip_index)
+
 		if equip_index != "":
 			# Unequip whatever is equipped
-			print("Checking equipment: ", equipment[equip_index])
 			if equipment[equip_index]:
-				print("Unequipping previous item from: ", equip_index)
 				_add_to_inventory(equipment[equip_index])
 			equipment[equip_index] = item
 			_update_armor()
+			_update_equipment()
 
 		# If the item was used (like a potion), remove it from inventory
 		# If it was equipped, it stays in inventory
 		if used:
-			print("Item used and removed from inventory: ", item.name)
 			_remove_from_inventory(index)
 			if not equip_index:
 				item.queue_free() # Remove item from the game
@@ -107,8 +112,8 @@ func _update_armor() -> void:
 	# Recalculate armor based on equipped items
 	armor = 0
 	for part in equipment.values():
-		if part and part.has("armor"):
-			armor += part.armor
+		if part and part.has("armor_value"):
+			armor += part.armor_value
 	print("Updated armor: ", armor)
 
 func _deal_damage() -> int:

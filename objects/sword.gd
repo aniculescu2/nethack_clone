@@ -5,7 +5,7 @@ extends Element2D
 
 func _ready() -> void:
 	print("setting sword vars")
-	element_id = Element2D.ItemType.SWORD
+	element_id = Element2D.ItemType.WEAPON
 	element_type = Element2D.CellType.ITEM
 	texture_path = "res://textures/sword.png"
 	print(element_id)

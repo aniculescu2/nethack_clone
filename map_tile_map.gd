@@ -252,7 +252,6 @@ func update_light(target: Vector2i) -> void:
 
 		_in_sight.append(current)
 		set_cell(current, tile_id, Vector2i.ZERO, 0)
-		#Todo: remove items if not in _in_sight
 
 		if is_closed:
 			# If the current tile is a wall, stop searching
