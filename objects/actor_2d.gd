@@ -105,6 +105,8 @@ func _on_unequipped_item(equip_index: String) -> void:
 		print("Unequipping item from: ", equip_index)
 		_add_to_inventory(equipment[equip_index])
 		equipment[equip_index] = null
+		_update_equipment()
+		_update_armor()
 	else:
 		print("No item equipped in: ", equip_index)
 
@@ -112,8 +114,8 @@ func _update_armor() -> void:
 	# Recalculate armor based on equipped items
 	armor = 0
 	for part in equipment.values():
-		if part and part.has("armor_value"):
-			armor += part.armor_value
+		if part and part.get("armor_value"):
+			armor += part.get("armor_value")
 	print("Updated armor: ", armor)
 
 func _deal_damage() -> int:

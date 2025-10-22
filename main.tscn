@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=4 uid="uid://baowome0sfn0x"]
+[gd_scene load_steps=36 format=4 uid="uid://baowome0sfn0x"]
 
 [ext_resource type="Texture2D" uid="uid://sbgbkcol3rcb" path="res://textures/stone_floor_small.png" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://cuhg8cfw6e0r5" path="res://player.tscn" id="2_1bvp3"]
@@ -17,9 +17,11 @@
 [ext_resource type="Texture2D" uid="uid://bxhtq0n1v2oso" path="res://textures/gold.png" id="12_yaehf"]
 [ext_resource type="Script" uid="uid://bimv1krwcmi4p" path="res://objects/potion.gd" id="12_ycdy4"]
 [ext_resource type="Texture2D" uid="uid://8wfklpnuxr" path="res://textures/sword.png" id="13_cegan"]
+[ext_resource type="Texture2D" uid="uid://d1x0l10dx6ne2" path="res://textures/chestplate.png" id="14_ryguw"]
 [ext_resource type="Script" uid="uid://b87xpgpimpk60" path="res://objects/gold.gd" id="16_2cqfq"]
 [ext_resource type="Script" uid="uid://d2ho7ueh135bn" path="res://objects/sword.gd" id="19_82xsv"]
 [ext_resource type="Script" uid="uid://cl22o2hog301o" path="res://objects/mob.gd" id="20_82xsv"]
+[ext_resource type="Script" uid="uid://dmy1g5j7kwglg" path="res://objects/armor.gd" id="21_getpj"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_dg77c"]
 texture = ExtResource("2_4c57u")
@@ -134,6 +136,11 @@ texture = ExtResource("13_cegan")
 texture_region_size = Vector2i(64, 64)
 0:0/0 = 0
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_d13ii"]
+texture = ExtResource("14_ryguw")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+
 [sub_resource type="TileSet" id="TileSet_4c57u"]
 tile_size = Vector2i(64, 64)
 sources/2 = SubResource("TileSetAtlasSource_2cqfq")
@@ -141,6 +148,7 @@ sources/1 = SubResource("TileSetAtlasSource_w48qg")
 sources/3 = SubResource("TileSetAtlasSource_074og")
 sources/4 = SubResource("TileSetAtlasSource_getpj")
 sources/0 = SubResource("TileSetAtlasSource_82xsv")
+sources/5 = SubResource("TileSetAtlasSource_d13ii")
 
 [node name="Main" type="Node"]
 
@@ -165,6 +173,9 @@ script = ExtResource("6_5vw27")
 tile_set = SubResource("TileSet_4c57u")
 script = ExtResource("7_5vw27")
 
+[node name="Player" parent="Map/ObjectTileMap" instance=ExtResource("2_1bvp3")]
+position = Vector2(96, 160)
+
 [node name="Key" type="Node2D" parent="Map/ObjectTileMap"]
 position = Vector2(550, 421)
 script = ExtResource("12_w48qg")
@@ -174,9 +185,6 @@ metadata/_custom_type_script = "uid://cr3hc2udkabfi"
 position = Vector2(96, 160)
 script = ExtResource("12_ycdy4")
 metadata/_custom_type_script = "uid://bimv1krwcmi4p"
-
-[node name="Player" parent="Map/ObjectTileMap" instance=ExtResource("2_1bvp3")]
-position = Vector2(96, 160)
 
 [node name="Potion2" type="Node2D" parent="Map/ObjectTileMap"]
 position = Vector2(96, 160)
@@ -201,15 +209,12 @@ element_type = 6
 element_id = 4
 metadata/_custom_type_script = "uid://d2ho7ueh135bn"
 
-[node name="Sword2" type="Node2D" parent="Map/ObjectTileMap"]
-position = Vector2(96, 400)
-script = ExtResource("19_82xsv")
-damage = 3
-element_type = 6
-element_id = 4
-metadata/_custom_type_script = "uid://d2ho7ueh135bn"
-
 [node name="Mob" type="Node2D" parent="Map/ObjectTileMap"]
 position = Vector2(860, 421)
 script = ExtResource("20_82xsv")
 metadata/_custom_type_script = "uid://cl22o2hog301o"
+
+[node name="Armor" type="Node2D" parent="Map/ObjectTileMap"]
+position = Vector2(216, 366)
+script = ExtResource("21_getpj")
+metadata/_custom_type_script = "uid://dmy1g5j7kwglg"

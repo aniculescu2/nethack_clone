@@ -43,12 +43,3 @@ func _remove_from_inventory(index: int) -> void:
 
 func _update_equipment() -> void:
 	game_ui.update_equipment(equipment)
-
-func _on_unequipped_item(equip_index: String) -> void:
-	if equipment.has(equip_index) and equipment[equip_index]:
-		print("Unequipping item from: ", equip_index)
-		_add_to_inventory(equipment[equip_index])
-		equipment[equip_index] = null
-		game_ui.update_equipment(equipment)
-	else:
-		print("No item equipped in: ", equip_index)
